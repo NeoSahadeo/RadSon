@@ -1,0 +1,23 @@
+{
+  "name": "RadSon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "docs": "npx typedoc src --plugin typedoc-theme-oxide && npx http-server ./docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "http-server": "^14.1.1",
+    "typedoc": "^0.28.7",
+    "typedoc-theme-oxide": "^0.2.0",
+    "typescript": "^5.8.3"
+  }
+}
