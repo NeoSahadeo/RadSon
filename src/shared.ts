@@ -2,7 +2,8 @@ import axios, { AxiosHeaders } from "axios";
 import type { AutoTaggingApi } from "./types/autotagging";
 import type { ApiType } from "./types/global";
 import { IndexerApi } from "./types/indexer";
-import { SystemApi, SystemBackupApi } from "./types/system";
+import { SystemApi } from "./types/system";
+import { BlockListApi } from "./types/blocklistShared";
 
 /**
  * SharedAPI class is the shared endpoint where both endpoints
@@ -24,6 +25,7 @@ class SharedAPI {
 	autotagging: AutoTaggingApi;
 	indexer: IndexerApi;
 	system: SystemApi;
+	blocklist: BlockListApi;
 
 	constructor({
 		radarr_api_key,
@@ -50,6 +52,9 @@ class SharedAPI {
 
 		this.system = {} as any;
 		this.register_system();
+
+		this.blocklist = {} as any;
+		this.register_blocklist();
 	}
 
 	DELETE_options(type: ApiType) {
@@ -249,6 +254,35 @@ class SharedAPI {
 			const url = this.get_url(type) + "restart/";
 			return await axios({ url, method: "POST" });
 		};
+	}
+
+	register_blocklist() {
+		const endpoint = "api/v3/blocklist";
+		this.blocklist.get = (
+			type,
+			page?,
+			page_size?,
+			sort_key?,
+			sort_direction?,
+			series_id?,
+			protocols?,
+		) => {
+			let query_elements = [];
+			const queries: any = {
+				page: page,
+				pageSize: page_size,
+				sortKey: sort_key,
+				sortDirection: sort_direction,
+			};
+			Object.keys(queries).forEach((value: string) => {
+				if (queries[value]) {
+					query_elements.push(value + queries[value]);
+				}
+			});
+			return await;
+		};
+		// this.blocklist.delete = () => { };
+		// this.blocklist.delete_bulk = () => { };
 	}
 }
 
