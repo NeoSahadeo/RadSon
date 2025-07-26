@@ -2,22 +2,33 @@
   "name": "RadSon",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "./src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
-    "docs": "npx typedoc src --plugin typedoc-theme-oxide && npx http-server ./docs"
+    "build-docs": "npx typedoc --options typedoc.json",
+    "docs": "npx typedoc --options typedoc.json && npx http-server ./docs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
+    "add": "^2.0.6",
     "http-server": "^14.1.1",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
     "typedoc": "^0.28.7",
     "typedoc-theme-oxide": "^0.2.0",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.4",
+    "axios": "^1.11.0"
   }
 }

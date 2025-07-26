@@ -1,0 +1,111 @@
+__Get__ autotags, example response:
+```json
+{
+	"id": 1,
+		"name": "example",
+		"removeTagsAutomatically": false,
+		"tags": [
+			1
+		],
+		"specifications": [
+		{
+			"name": "x123",
+			"implementation": "StatusSpecification",
+			"implementationName": "Status",
+			"negate": false,
+			"required": false,
+			"fields": [
+			{
+				"order": 0,
+				"name": "status",
+				"label": "Status",
+				"value": 1,
+				"type": "select",
+				"advanced": false,
+				"selectOptions": [
+				{
+					"value": -1,
+					"name": "Deleted",
+					"order": -1
+				},
+				{
+					"value": 0,
+					"name": "Continuing",
+					"order": 0
+				},
+				{
+					"value": 1,
+					"name": "Ended",
+					"order": 1
+				},
+				{
+					"value": 2,
+					"name": "Upcoming",
+					"order": 2
+				}
+				],
+				"privacy": "normal",
+				"isFloat": false
+			}
+			]
+		}
+		]
+}]
+```
+
+__POST__ create autotags example:
+
+```json
+{
+	"removeTagsAutomatically": false,
+		"tags": [
+			1
+		],
+		"name": "example",
+		"specifications": [
+		{
+			"implementation": "StatusSpecification",
+			"implementationName": "Status",
+			"negate": false,
+			"required": false,
+			"fields": [
+			{
+				"order": 0,
+				"name": "status",
+				"label": "Status",
+				"value": 1,
+				"type": "select",
+				"advanced": false,
+				"selectOptions": [
+				{
+					"value": -1,
+					"name": "Deleted",
+					"order": -1
+				},
+				{
+					"value": 0,
+					"name": "Continuing",
+					"order": 0
+				},
+				{
+					"value": 1,
+					"name": "Ended",
+					"order": 1
+				},
+				{
+					"value": 2,
+					"name": "Upcoming",
+					"order": 2
+				}
+				],
+				"privacy": "normal",
+				"isFloat": false
+			}
+			],
+			"id": 3,
+			"name": "x123"
+		}
+		]
+}
+```
+__PUT__ is structured the same as a post
