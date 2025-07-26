@@ -24,14 +24,42 @@ test("api", async () => {
 	});
 });
 
-test("autotagging", async () => {
-	const sonarr_get = await api.autotagging.get("sonarr");
-	const radarr_radarr = await api.autotagging.get("radarr");
-	expect(sonarr_get).toBeDefined();
-	expect(radarr_radarr).toBeDefined();
+test("autotagging_get", async () => {
+	const sonarr_get: any = await api.autotagging.get("sonarr");
+	const radarr_radarr: any = await api.autotagging.get("radarr");
+	expect(sonarr_get.status).toBe(200);
+	expect(radarr_radarr.status).toBe(200);
+});
 
-	// const sonarr_post;
-	// const radarr_post;
-	// const sonarr_put;
-	// const radarr_put;
+test("autotagging_post", async () => {
+	const sonarr_post: any = await api.autotagging.post(
+		"sonarr",
+		JSON.parse(
+			`{ "removeTagsAutomatically": false, "tags": [1], "name": "test", "specifications": [{ "implementation": "StatusSpecification", "implementationName": "Status", "negate": false, "required": false, "fields": [{ "order": 0, "name": "status", "label": "Status", "value": 1, "type": "select", "advanced": false, "selectOptions": [{ "value": -1, "name": "Deleted", "order": -1 }, { "value": 0, "name": "Continuing", "order": 0 }, { "value": 1, "name": "Ended", "order": 1 }, { "value": 2, "name": "Upcoming", "order": 2 }], "privacy": "normal", "isFloat": false }], "id": 3, "name": "x123" }] }`,
+		),
+	);
+	const radarr_post: any = await api.autotagging.post(
+		"radarr",
+		JSON.parse(
+			`{ "removeTagsAutomatically": false, "tags": [1], "name": "test", "specifications": [{ "implementation": "StatusSpecification", "implementationName": "Status", "negate": false, "required": false, "fields": [{ "order": 0, "name": "status", "label": "Status", "value": 1, "type": "select", "advanced": false, "selectOptions": [{ "value": -1, "name": "Deleted", "order": -1 }, { "value": 0, "name": "Continuing", "order": 0 }, { "value": 1, "name": "Ended", "order": 1 }, { "value": 2, "name": "Upcoming", "order": 2 }], "privacy": "normal", "isFloat": false }], "id": 3, "name": "x123" }] }`,
+		),
+	);
+	expect(sonarr_post.status).toBe(201);
+	expect(radarr_post.status).toBe(201);
+});
+
+// test("autotagging_put", async () => {
+// });
+//
+// test("autotagging_delete", async () => {
+// });
+//
+// test("autotagging_schema", async () => {
+// });
+
+test("diskspace", async () => {
+	const sonarr: any = await api.diskspace("sonarr");
+	const radarr: any = await api.diskspace("sonarr");
+	expect(sonarr.status === 200 || `Sonarr: ${sonarr}`).toBe(true);
+	expect(radarr.status === 200 || `Radarr: ${radarr}`).toBe(true);
 });

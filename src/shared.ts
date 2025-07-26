@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 import type { AutoTaggingApi } from "./types/autotagging";
 import type { ApiType } from "./types/global";
+import { IndexerApi } from "./types/indexer";
 
 /**
  * SharedAPI class is the shared endpoint where both endpoints
@@ -20,6 +21,7 @@ class SharedAPI {
 
 	// endpoints
 	autotagging: AutoTaggingApi;
+	indexer: IndexerApi;
 
 	constructor({
 		radarr_api_key,
@@ -40,6 +42,9 @@ class SharedAPI {
 		// register endpoints
 		this.autotagging = {} as any;
 		this.register_autotagging();
+
+		this.indexer = {} as any;
+		this.register_indexer();
 	}
 
 	DELETE_options(type: ApiType) {
@@ -58,22 +63,20 @@ class SharedAPI {
 			},
 		};
 	}
-	POST_options(type: ApiType, body?: JSON) {
+	POST_options(type: ApiType) {
 		return {
 			headers: {
 				"X-Api-Key":
 					type === "sonarr" ? this.sonarr_api_key : this.radarr_api_key,
 			},
-			body: JSON.stringify(body),
 		};
 	}
-	PUT_options(type: ApiType, body?: JSON) {
+	PUT_options(type: ApiType) {
 		return {
 			headers: {
 				"X-Api-Key":
 					type === "sonarr" ? this.sonarr_api_key : this.radarr_api_key,
 			},
-			body: JSON.stringify(body),
 		};
 	}
 
@@ -81,50 +84,126 @@ class SharedAPI {
 		return type === "sonarr" ? this.sonarr_addr : this.radarr_addr;
 	}
 
-	/**
-	 *
-	 * Looks like it returns the API version number and a list of deprecated functions
-	 * ```json
-	 *{
-	 *	"current": "v3",
-	 *	"deprecated": []
-	 *}
-	 *```
-	 */
 	async api(type: ApiType) {
 		return await axios.get(this.get_url(type) + "api/", this.GET_options(type));
 	}
 
+	async generic_get(endpoint: string, type: ApiType, id?: number | undefined) {
+		return await axios.get(
+			this.get_url(type) + endpoint + (id ? id : ""),
+			this.GET_options(type),
+		);
+	}
+	async generic_post(endpoint: string, type: ApiType, body: object) {
+		return await axios.post(
+			this.get_url(type) + endpoint,
+			body,
+			this.POST_options(type),
+		);
+	}
+	async generic_put(
+		endpoint: string,
+		type: ApiType,
+		body: object,
+		id: number | undefined,
+	) {
+		return await axios.put(
+			this.get_url(type) + endpoint + id,
+			body,
+			this.PUT_options(type),
+		);
+	}
+	async generic_delete(
+		endpoint: string,
+		type: ApiType,
+		id?: number | undefined,
+	) {
+		return await axios.get(
+			this.get_url(type) + endpoint + (id ? id : ""),
+			this.GET_options(type),
+		);
+	}
+
 	register_autotagging() {
-		this.autotagging.get = async (type: ApiType, id?: number) => {
-			return await axios.get(
-				this.get_url(type) + "api/v3/autotagging" + (id ? "/" + id : ""),
-				this.GET_options(type),
-			);
+		const endpoint = "api/v3/autotagging/";
+		this.autotagging.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
 		};
-		this.autotagging.post = async (type: ApiType, body: JSON) => {
-			return await axios.post(
-				this.get_url(type) + "api/v3/autotagging",
-				this.POST_options(type, body),
-			);
+		this.autotagging.post = (...args) => {
+			return this.generic_post(endpoint, ...args);
 		};
-		this.autotagging.put = async (type: ApiType, body: JSON, id: number) => {
+		this.autotagging.put = async (...args) => {
+			return this.generic_put(endpoint, ...args);
+		};
+		this.autotagging.delete = async (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+		this.autotagging.schema = (...args) => {
+			return this.generic_get(endpoint + "schema/", ...args);
+		};
+	}
+
+	diskspace(type: ApiType) {
+		return this.generic_get("api/v3/diskspace/", type);
+	}
+
+	register_indexer() {
+		const endpoint = "api/v3/indexer/";
+		this.indexer.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.indexer.post = async (...args) => {
+			return this.generic_post(endpoint, ...args);
+		};
+		this.indexer.schema = (...args) => {
+			return this.generic_get(endpoint + "schema/", ...args);
+		};
+		this.indexer.put = (...args) => {
+			return this.generic_put(endpoint, ...args);
+		};
+		this.indexer.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+		this.indexer.put_bulk = async (type, body) => {
 			return await axios.put(
-				this.get_url(type) + "api/v3/autotagging/" + id,
-				this.PUT_options(type, body),
+				this.get_url(type) + endpoint + "bulk/",
+				body,
+				this.PUT_options(type),
 			);
 		};
-		this.autotagging.delete = async (type: ApiType, id: number) => {
-			return await axios.delete(
-				this.get_url(type) + "api/v3/autotagging/" + id,
-				this.DELETE_options(type),
+		this.indexer.delete_bulk = async (type, body) => {
+			const url = this.get_url(type) + endpoint + "bulk/";
+			const headers = this.PUT_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
+		this.indexer.test = async (type, body, force_test) => {
+			return this.generic_post(
+				endpoint +
+				"test" +
+				(force_test !== undefined ? "?forceTest=" + force_test : "/"),
+				type,
+				body,
 			);
 		};
-		this.autotagging.schema = async (type: ApiType) => {
-			return await axios.get(
-				this.get_url(type) + "api/v3/autotagging/schema",
-				this.GET_options(type),
-			);
+		this.indexer.test_all = async (type) => {
+			const url = this.get_url(type) + "testall/";
+			return await axios({
+				url,
+				method: "POST",
+			});
+		};
+		this.indexer.action = async (type, body, name) => {
+			const url = this.get_url(type) + "action/" + name;
+			return await axios({
+				url,
+				method: "POST",
+				data: body,
+			});
 		};
 	}
 }

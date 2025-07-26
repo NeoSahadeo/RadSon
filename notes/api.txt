@@ -1,0 +1,10 @@
+	/**
+	 *
+	 * Looks like it returns the API version number and a list of deprecated functions
+	 * ```json
+	 *{
+	 *	"current": "v3",
+	 *	"deprecated": []
+	 *}
+	 *```
+	 */
