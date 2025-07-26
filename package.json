@@ -1,7 +1,7 @@
 {
-  "name": "RadSon",
+  "name": "radson",
   "version": "1.0.0",
-  "description": "",
+  "description": "Radarr + Sonarr Typescript API",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
