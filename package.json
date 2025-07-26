@@ -1,6 +1,6 @@
 {
   "name": "radson",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Radarr + Sonarr Typescript API",
   "type": "module",
   "main": "./src/index.ts",
@@ -9,7 +9,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "build-docs": "npx typedoc --options typedoc.json",
-    "docs": "npx typedoc --options typedoc.json && npx http-server ./docs"
+    "docs": "npx typedoc --options typedoc.json && npx http-server ./docs",
+    "dev": "tsc --noEmit --watch"
   },
   "keywords": [],
   "author": "",

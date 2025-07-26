@@ -38,7 +38,7 @@ class SharedAPI {
 		this.radarr_addr = radarr_addr;
 
 		// register endpoints
-		this.autotagging = null as any;
+		this.autotagging = {} as any;
 		this.register_autotagging();
 	}
 

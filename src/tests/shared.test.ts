@@ -25,8 +25,13 @@ test("api", async () => {
 });
 
 test("autotagging", async () => {
-	const sonarr = await api.autotagging.get("sonarr");
-	const radarr = await api.autotagging.get("radarr");
-	expect(sonarr).toBeDefined();
-	expect(radarr).toBeDefined();
+	const sonarr_get = await api.autotagging.get("sonarr");
+	const radarr_radarr = await api.autotagging.get("radarr");
+	expect(sonarr_get).toBeDefined();
+	expect(radarr_radarr).toBeDefined();
+
+	// const sonarr_post;
+	// const radarr_post;
+	// const sonarr_put;
+	// const radarr_put;
 });
