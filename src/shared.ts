@@ -2,6 +2,7 @@ import axios, { AxiosHeaders } from "axios";
 import type { AutoTaggingApi } from "./types/autotagging";
 import type { ApiType } from "./types/global";
 import { IndexerApi } from "./types/indexer";
+import { SystemApi, SystemBackupApi } from "./types/system";
 
 /**
  * SharedAPI class is the shared endpoint where both endpoints
@@ -22,6 +23,7 @@ class SharedAPI {
 	// endpoints
 	autotagging: AutoTaggingApi;
 	indexer: IndexerApi;
+	system: SystemApi;
 
 	constructor({
 		radarr_api_key,
@@ -45,6 +47,9 @@ class SharedAPI {
 
 		this.indexer = {} as any;
 		this.register_indexer();
+
+		this.system = {} as any;
+		this.register_system();
 	}
 
 	DELETE_options(type: ApiType) {
@@ -204,6 +209,45 @@ class SharedAPI {
 				method: "POST",
 				data: body,
 			});
+		};
+	}
+
+	register_system() {
+		const endpoint = "api/v3/system/";
+		this.system.backup.get = (...args) => {
+			return this.generic_get(endpoint + "backup/", ...args);
+		};
+		this.system.backup.delete = (...args) => {
+			return this.generic_delete(endpoint + "backup/", ...args);
+		};
+		this.system.backup.restore = async (type, id) => {
+			const url = this.get_url(type) + "backup/restore/" + id;
+			return await axios({ url, method: "POST" });
+		};
+		this.system.backup.restore_upload = async (type) => {
+			const url = this.get_url(type) + "backup/restore/upload";
+			return await axios({ url, method: "POST" });
+		};
+
+		this.system.task = (...args) => {
+			return this.generic_get(endpoint + "task/", ...args);
+		};
+		this.system.status = (...args) => {
+			return this.generic_get(endpoint + "status/", ...args);
+		};
+		this.system.routes = (...args) => {
+			return this.generic_get(endpoint + "routes/", ...args);
+		};
+		this.system.routes_duplicate = (...args) => {
+			return this.generic_get(endpoint + "routes/duplicate/", ...args);
+		};
+		this.system.shutdown = async (type) => {
+			const url = this.get_url(type) + "shutdown/";
+			return await axios({ url, method: "POST" });
+		};
+		this.system.restart = async (type) => {
+			const url = this.get_url(type) + "restart/";
+			return await axios({ url, method: "POST" });
 		};
 	}
 }
