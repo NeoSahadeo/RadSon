@@ -4,6 +4,9 @@ import type { ApiType } from "./types/global";
 import { IndexerApi } from "./types/indexer";
 import { SystemApi } from "./types/system";
 import { BlockListApi } from "./types/blocklistShared";
+import { CommandApi } from "./types/command";
+import { CustomFilterApi } from "./types/customFilter";
+import { CustomFormatApi } from "./types/customFormat";
 
 /**
  * SharedAPI class is the shared endpoint where both endpoints
@@ -26,6 +29,9 @@ class SharedAPI {
 	indexer: IndexerApi;
 	system: SystemApi;
 	blocklist: BlockListApi;
+	command: CommandApi;
+	customfilter: CustomFilterApi;
+	customformat: CustomFormatApi;
 
 	constructor({
 		radarr_api_key,
@@ -55,6 +61,15 @@ class SharedAPI {
 
 		this.blocklist = {} as any;
 		this.register_blocklist();
+
+		this.command = {} as any;
+		this.register_command();
+
+		this.customfilter = {} as any;
+		this.register_customfilter();
+
+		this.customformat = {} as any;
+		this.register_customformat();
 	}
 
 	DELETE_options(type: ApiType) {
@@ -128,9 +143,9 @@ class SharedAPI {
 		type: ApiType,
 		id?: number | undefined,
 	) {
-		return await axios.get(
+		return await axios.delete(
 			this.get_url(type) + endpoint + (id ? id : ""),
-			this.GET_options(type),
+			this.DELETE_options(type),
 		);
 	}
 
@@ -183,7 +198,7 @@ class SharedAPI {
 		};
 		this.indexer.delete_bulk = async (type, body) => {
 			const url = this.get_url(type) + endpoint + "bulk/";
-			const headers = this.PUT_options(type) as any as AxiosHeaders;
+			const headers = this.DELETE_options(type) as any as AxiosHeaders;
 			return await axios({
 				url,
 				method: "DELETE",
@@ -202,16 +217,20 @@ class SharedAPI {
 		};
 		this.indexer.test_all = async (type) => {
 			const url = this.get_url(type) + "testall/";
+			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({
 				url,
 				method: "POST",
+				headers,
 			});
 		};
 		this.indexer.action = async (type, body, name) => {
 			const url = this.get_url(type) + "action/" + name;
+			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({
 				url,
 				method: "POST",
+				headers,
 				data: body,
 			});
 		};
@@ -227,11 +246,13 @@ class SharedAPI {
 		};
 		this.system.backup.restore = async (type, id) => {
 			const url = this.get_url(type) + "backup/restore/" + id;
-			return await axios({ url, method: "POST" });
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({ url, method: "POST", headers });
 		};
 		this.system.backup.restore_upload = async (type) => {
 			const url = this.get_url(type) + "backup/restore/upload";
-			return await axios({ url, method: "POST" });
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({ url, method: "POST", headers });
 		};
 
 		this.system.task = (...args) => {
@@ -248,41 +269,167 @@ class SharedAPI {
 		};
 		this.system.shutdown = async (type) => {
 			const url = this.get_url(type) + "shutdown/";
-			return await axios({ url, method: "POST" });
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({ url, method: "POST", headers });
 		};
 		this.system.restart = async (type) => {
 			const url = this.get_url(type) + "restart/";
-			return await axios({ url, method: "POST" });
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({ url, method: "POST", headers });
 		};
 	}
 
 	register_blocklist() {
 		const endpoint = "api/v3/blocklist";
-		this.blocklist.get = (
+		this.blocklist.get = ({
 			type,
-			page?,
-			page_size?,
-			sort_key?,
-			sort_direction?,
-			series_id?,
-			protocols?,
-		) => {
-			let query_elements = [];
-			const queries: any = {
-				page: page,
-				pageSize: page_size,
-				sortKey: sort_key,
-				sortDirection: sort_direction,
-			};
-			Object.keys(queries).forEach((value: string) => {
-				if (queries[value]) {
-					query_elements.push(value + queries[value]);
-				}
-			});
-			return await;
+			page,
+			page_size,
+			sort_key,
+			sort_direction,
+			series_id,
+			protocols,
+		}) => {
+			const query_elements = [];
+			if (page) {
+				query_elements.push("page=" + page);
+			}
+			if (page_size) {
+				query_elements.push("pageSize=" + page_size);
+			}
+			if (sort_key) {
+				query_elements.push("sortKey=" + sort_direction);
+			}
+			if (sort_direction) {
+				query_elements.push("sortDirection=" + sort_direction);
+			}
+			if (series_id && series_id.length > 0) {
+				series_id.forEach((e) => {
+					query_elements.push("seriesIds=" + e);
+				});
+			}
+			if (protocols && protocols.length > 0) {
+				protocols.forEach((e) => {
+					query_elements.push("protocols=" + e);
+				});
+			}
+			let query_string = "";
+			if (query_elements.length > 0) {
+				query_string = "?" + query_elements.join("&");
+			}
+			return this.generic_get(endpoint + query_string, type);
 		};
-		// this.blocklist.delete = () => { };
-		// this.blocklist.delete_bulk = () => { };
+		this.blocklist.delete = (type, id) => {
+			return this.generic_delete(endpoint + "/", type, id);
+		};
+		this.blocklist.delete_bulk = async (type, body) => {
+			const url = this.get_url(type) + endpoint + "/bulk";
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
+	}
+	calendar({
+		type,
+		start,
+		end,
+		unmonitored,
+		tags,
+	}: {
+		type: ApiType;
+		start?: any;
+		end?: any;
+		unmonitored?: boolean;
+		tags?: string;
+	}) {
+		const endpoint = "api/v3/calendar";
+		const query_elements = [];
+		if (start) {
+			query_elements.push("start=" + start);
+		}
+		if (end) {
+			query_elements.push("end=" + end);
+		}
+		if (unmonitored) {
+			query_elements.push("unmonitored=" + unmonitored);
+		}
+		if (tags) {
+			query_elements.push("tags=" + tags);
+		}
+		let query_string = "";
+		if (query_elements.length > 0) {
+			query_string = "?" + query_elements.join("&");
+		}
+		return this.generic_get(endpoint + query_string, type);
+	}
+
+	register_command() {
+		const endpoint = "api/v3/command/";
+		this.command.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.command.post = (...args) => {
+			return this.generic_post(endpoint, ...args);
+		};
+		this.command.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+	}
+
+	register_customfilter() {
+		const endpoint = "api/v3/customfilter/";
+		this.customfilter.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.customfilter.post = (...args) => {
+			return this.generic_post(endpoint, ...args);
+		};
+		this.customfilter.put = (...args) => {
+			return this.generic_put(endpoint, ...args);
+		};
+		this.customfilter.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+	}
+
+	register_customformat() {
+		const endpoint = "api/v3/customformat/";
+		this.customformat.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.customformat.post = (...args) => {
+			return this.generic_post(endpoint, ...args);
+		};
+		this.customformat.put = (...args) => {
+			return this.generic_put(endpoint, ...args);
+		};
+		this.customformat.put_bulk = async (type, body) => {
+			return await axios.put(
+				this.get_url(type) + endpoint + "bulk/",
+				body,
+				this.PUT_options(type),
+			);
+		};
+		this.customformat.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+		this.customformat.delete_bulk = async (type, body) => {
+			const url = this.get_url(type) + endpoint + "bulk/";
+			const headers = this.DELETE_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
+		this.customformat.schema = (...args) => {
+			return this.generic_get(endpoint + "schema/", ...args);
+		};
 	}
 }
 
