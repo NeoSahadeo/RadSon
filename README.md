@@ -2,8 +2,7 @@
 
 A unified Sonarr and Radarr Typescript API.
 
-
-(Kanban)[https://tree.taiga.io/project/neosahadeo-radson/kanban]
+[Kanban](https://tree.taiga.io/project/neosahadeo-radson/kanban)
 
 - Sonarr Api -> https://sonarr.tv/docs/api/
 - Radarr Api -> https://radarr.video/docs/api/
