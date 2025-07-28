@@ -32,8 +32,8 @@ import { RootFolderApi } from "./types/rootFolder";
  * @param sonarr_addr - URI for the sonarr server, must end in a slash
  * @param radarr_addr - URI for the radarr server, must end in a slash
  * */
-class SharedAPI {
-	NAMESPACE: string = "SharedAPI";
+class SharedApi {
+	NAMESPACE: string = "SharedApi";
 	sonarr_api_key: string;
 	radarr_api_key: string;
 	sonarr_addr: string;
@@ -1027,4 +1027,4 @@ class SharedAPI {
 	}
 }
 
-export default SharedAPI;
+export default SharedApi;
