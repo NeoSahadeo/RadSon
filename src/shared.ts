@@ -7,6 +7,12 @@ import { BlockListApi } from "./types/blocklistShared";
 import { CommandApi } from "./types/command";
 import { CustomFilterApi } from "./types/customFilter";
 import { CustomFormatApi } from "./types/customFormat";
+import { DelayProfileApi } from "./types/delayProfile";
+import { WantedApi } from "./types/wantedShared";
+import { DownloadClientApi } from "./types/downloadClient";
+import { ConfigApi } from "./types/configShared";
+import { FileSystemApi } from "./types/fileSystem";
+import { ImportListApi } from "./types/importListShared";
 
 /**
  * SharedAPI class is the shared endpoint where both endpoints
@@ -32,6 +38,12 @@ class SharedAPI {
 	command: CommandApi;
 	customfilter: CustomFilterApi;
 	customformat: CustomFormatApi;
+	delayprofile: DelayProfileApi;
+	wanted: WantedApi;
+	downloadclient: DownloadClientApi;
+	config: ConfigApi;
+	filesystem: FileSystemApi;
+	importlist: ImportListApi;
 
 	constructor({
 		radarr_api_key,
@@ -70,6 +82,24 @@ class SharedAPI {
 
 		this.customformat = {} as any;
 		this.register_customformat();
+
+		this.delayprofile = {} as any;
+		this.register_delayprofile();
+
+		this.wanted = {} as any;
+		this.register_wanted();
+
+		this.downloadclient = {} as any;
+		this.register_downloadclient();
+
+		this.config = {} as any;
+		this.register_config();
+
+		this.filesystem = {} as any;
+		this.register_filesystem();
+
+		this.importlist = {} as any;
+		this.register_importlist();
 	}
 
 	DELETE_options(type: ApiType) {
@@ -216,7 +246,7 @@ class SharedAPI {
 			);
 		};
 		this.indexer.test_all = async (type) => {
-			const url = this.get_url(type) + "testall/";
+			const url = this.get_url(type) + endpoint + "testall/";
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({
 				url,
@@ -225,7 +255,7 @@ class SharedAPI {
 			});
 		};
 		this.indexer.action = async (type, body, name) => {
-			const url = this.get_url(type) + "action/" + name;
+			const url = this.get_url(type) + endpoint + "action/" + name;
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({
 				url,
@@ -245,12 +275,12 @@ class SharedAPI {
 			return this.generic_delete(endpoint + "backup/", ...args);
 		};
 		this.system.backup.restore = async (type, id) => {
-			const url = this.get_url(type) + "backup/restore/" + id;
+			const url = this.get_url(type) + endpoint + "backup/restore/" + id;
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({ url, method: "POST", headers });
 		};
 		this.system.backup.restore_upload = async (type) => {
-			const url = this.get_url(type) + "backup/restore/upload";
+			const url = this.get_url(type) + endpoint + "backup/restore/upload";
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({ url, method: "POST", headers });
 		};
@@ -268,12 +298,12 @@ class SharedAPI {
 			return this.generic_get(endpoint + "routes/duplicate/", ...args);
 		};
 		this.system.shutdown = async (type) => {
-			const url = this.get_url(type) + "shutdown/";
+			const url = this.get_url(type) + endpoint + "shutdown/";
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({ url, method: "POST", headers });
 		};
 		this.system.restart = async (type) => {
-			const url = this.get_url(type) + "restart/";
+			const url = this.get_url(type) + endpoint + "restart/";
 			const headers = this.POST_options(type) as any as AxiosHeaders;
 			return await axios({ url, method: "POST", headers });
 		};
@@ -429,6 +459,266 @@ class SharedAPI {
 		};
 		this.customformat.schema = (...args) => {
 			return this.generic_get(endpoint + "schema/", ...args);
+		};
+	}
+	register_delayprofile() {
+		const endpoint = "api/v3/delayprofile/";
+		this.delayprofile.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.delayprofile.post = (...args) => {
+			return this.generic_post(endpoint, ...args);
+		};
+		this.delayprofile.put = (...args) => {
+			return this.generic_put(endpoint, ...args);
+		};
+		this.delayprofile.reorder = (...args) => {
+			return this.generic_put(endpoint + "reorder/", ...args);
+		};
+		this.delayprofile.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+	}
+
+	register_wanted() {
+		const endpoint = "api/v3/wanted/";
+		this.wanted.missing = (...args) => {
+			return this.generic_get(endpoint + "missing/", ...args);
+		};
+		this.wanted.cutoff = (...args) => {
+			return this.generic_get(endpoint + "cutoff/", ...args);
+		};
+	}
+
+	register_downloadclient() {
+		const endpoint = "api/v3/downloadclient";
+		this.downloadclient.get = (...args) => {
+			return this.generic_get(endpoint, ...args);
+		};
+		this.downloadclient.post = async (type, body, force_save) => {
+			return axios.post(
+				this.get_url(type) + endpoint + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.POST_options(type),
+			);
+		};
+		this.downloadclient.put = (type, body, id, force_save) => {
+			return axios.put(
+				this.get_url(type) + endpoint + "/" + id + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.PUT_options(type),
+			);
+		};
+		this.downloadclient.put_bulk = (type, body) => {
+			return axios.put(
+				this.get_url(type) + endpoint,
+				body,
+				this.PUT_options(type),
+			);
+		};
+		this.downloadclient.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+		this.downloadclient.delete_bulk = async (type, body) => {
+			const url = this.get_url(type) + endpoint + "/bulk/";
+			const headers = this.DELETE_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
+		this.downloadclient.test = (type, body, force_save) => {
+			return axios.post(
+				this.get_url(type) + endpoint + "/test" + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.POST_options(type),
+			);
+		};
+		this.downloadclient.test_all = async (type) => {
+			const url = this.get_url(type) + endpoint + "/testall/";
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "POST",
+				headers,
+			});
+		};
+		this.downloadclient.action = async (type, body, name) => {
+			const url = this.get_url(type) + endpoint + "/action/" + name;
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "POST",
+				headers,
+				data: body,
+			});
+		};
+		this.customformat.schema = (...args) => {
+			return this.generic_get(endpoint + "/schema/", ...args);
+		};
+	}
+	register_config() {
+		const endpoint = "api/v3/config/";
+		this.config.downloadclient.get = (...args) =>
+			this.generic_get(endpoint + "downloadclient/", ...args);
+		this.config.downloadclient.put = (...args) =>
+			this.generic_put(endpoint + "downloadclient/", ...args);
+
+		this.config.ui.get = (...args) =>
+			this.generic_get(endpoint + "ui/", ...args);
+		this.config.ui.put = (...args) =>
+			this.generic_put(endpoint + "ui/", ...args);
+
+		this.config.host.get = (...args) =>
+			this.generic_get(endpoint + "host/", ...args);
+		this.config.host.put = (...args) =>
+			this.generic_put(endpoint + "host/", ...args);
+
+		this.config.naming.get = (...args) =>
+			this.generic_get(endpoint + "naming/", ...args);
+		this.config.naming.put = (...args) =>
+			this.generic_put(endpoint + "naming/", ...args);
+
+		this.config.indexer.get = (...args) =>
+			this.generic_get(endpoint + "indexer/", ...args);
+		this.config.indexer.put = (...args) =>
+			this.generic_put(endpoint + "indexer/", ...args);
+
+		this.config.importlist.get = (...args) =>
+			this.generic_get(endpoint + "importlist/", ...args);
+		this.config.importlist.put = (...args) =>
+			this.generic_put(endpoint + "importlist/", ...args);
+
+		this.config.mediamanagement.get = (...args) =>
+			this.generic_get(endpoint + "mediamanagement/", ...args);
+		this.config.mediamanagement.put = (...args) =>
+			this.generic_put(endpoint + "mediamanagement/", ...args);
+	}
+
+	register_filesystem() {
+		const endpoint = "api/v3/filesystem";
+		this.filesystem.get = ({
+			type,
+			path,
+			include_files,
+			allow_folder_without_trailing_slashes,
+		}) => {
+			const query_elements = [];
+			if (path) {
+				query_elements.push("path=" + path);
+			}
+			if (include_files) {
+				query_elements.push("includeFiles=" + include_files);
+			}
+			if (allow_folder_without_trailing_slashes) {
+				query_elements.push(
+					"allowFoldersWithoutTrailingSlashes=" +
+					allow_folder_without_trailing_slashes,
+				);
+			}
+			let query_string = "";
+			if (query_elements.length > 0) {
+				query_string = "?" + query_elements.join("&");
+			}
+			return this.generic_get(endpoint + query_string, type);
+		};
+		this.filesystem.type = (type, path) => {
+			return this.generic_get(
+				endpoint + "/type" + path !== undefined ? "?path=" + path : "",
+				type,
+			);
+		};
+		this.filesystem.media_files = (type, path) => {
+			return this.generic_get(
+				endpoint + "/mediafiles" + path !== undefined ? "?path=" + path : "",
+				type,
+			);
+		};
+	}
+	health(type: ApiType) {
+		return this.generic_get("api/v3/health/", type);
+	}
+	register_importlist() {
+		const endpoint = "api/v3/importlist";
+		this.importlist.get = (...args) =>
+			this.generic_get(endpoint + "/", ...args);
+
+		this.importlist.post = async (type, body, force_save) => {
+			return axios.post(
+				this.get_url(type) + endpoint + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.POST_options(type),
+			);
+		};
+		this.importlist.put = (type, body, id, force_save) => {
+			return axios.put(
+				this.get_url(type) + endpoint + "/" + id + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.PUT_options(type),
+			);
+		};
+		this.importlist.put_bulk = (type, body) => {
+			return axios.put(
+				this.get_url(type) + endpoint,
+				body,
+				this.PUT_options(type),
+			);
+		};
+		this.importlist.delete = (...args) => {
+			return this.generic_delete(endpoint, ...args);
+		};
+		this.importlist.delete_bulk = async (type, body) => {
+			const url = this.get_url(type) + endpoint + "/bulk/";
+			const headers = this.DELETE_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
+		this.importlist.test = (type, body, force_save) => {
+			return axios.post(
+				this.get_url(type) + endpoint + "/test" + force_save !== undefined
+					? "?forceSave=" + force_save
+					: "",
+				body,
+				this.POST_options(type),
+			);
+		};
+		this.importlist.test_all = async (type) => {
+			const url = this.get_url(type) + endpoint + "/testall/";
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "POST",
+				headers,
+			});
+		};
+		this.importlist.action = async (type, body, name) => {
+			const url = this.get_url(type) + endpoint + "/action/" + name;
+			const headers = this.POST_options(type) as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "POST",
+				headers,
+				data: body,
+			});
+		};
+		this.importlist.schema = (...args) => {
+			return this.generic_get(endpoint + "/schema/", ...args);
 		};
 	}
 }
