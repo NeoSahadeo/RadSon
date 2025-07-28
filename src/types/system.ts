@@ -1,5 +1,5 @@
 import type { ApiType } from "./global";
-export interface SystemBackupApi {
+interface SystemBackupApi {
 	get(type: ApiType): Promise<unknown>;
 	restore(type: ApiType, id: number): Promise<unknown>;
 	restore_upload(type: ApiType): Promise<unknown>;
