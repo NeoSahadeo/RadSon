@@ -13,7 +13,7 @@ pnpm i radson
 
 All endpoints are accessable via, `SharedApi`, `SonarrApi` and `RadarrApi` respectively.
 
-Some functions are only available on their specific api's, eg: You can call a movie api on sonarr.
+Some functions are only available on their specific api's, eg: You can't call a movie api on sonarr.
 
 The methods are all named according to the Sonarr and Radarr api docs.
 
