@@ -33,14 +33,11 @@ class RadarrApi {
 	history: HistoryApi;
 	exclusion: ExclusionApi;
 	importlist: ImportListApi;
-	config: ConfigApi;
+	config: ConfigApi; // once-off
 	manualimport: ManualImportApi;
 	release: ReleaseApi;
 	releaseprofile: ReleaseProfileApi;
 	queue: QueueApi;
-
-	// once-off
-	config: any;
 
 	constructor({
 		radarr_api_key,
@@ -90,7 +87,7 @@ class RadarrApi {
 		this.register_queue();
 
 		// register endpoints once-off
-		this.config = {};
+		this.config = {} as any;
 		this.register_once_off_config();
 	}
 	get_headers() {
@@ -772,7 +769,7 @@ class RadarrApi {
 	}
 
 	register_once_off_config() {
-		this.config.naming.examples = async ({
+		(this.config as any).naming.examples = async ({
 			rename_movies,
 			replace_illegal_characters,
 			colon_replacement_format,
