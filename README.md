@@ -7,6 +7,10 @@ A unified Sonarr and Radarr Typescript API.
 
 # Quickstart
 
+```bash
+pnpm i radson
+```
+
 All endpoints are accessable via, `SharedApi`, `SonarrApi` and `RadarrApi` respectively.
 
 Some functions are only available on their specific api's, eg: You can call a movie api on sonarr.
