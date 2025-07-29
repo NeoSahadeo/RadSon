@@ -1,3 +1,5 @@
+[![Node.js Package](https://github.com/NeoSahadeo/RadSon/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/NeoSahadeo/RadSon/actions/workflows/npm-publish.yml)
+
 # RadSon
 
 A unified Sonarr and Radarr Typescript API.
