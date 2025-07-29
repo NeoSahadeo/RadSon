@@ -29,8 +29,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: pnpm/action-setup@v4.1.0
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.1.0
       - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
