@@ -1,16 +1,13 @@
-interface ManualImportApi {
+export interface ReleaseApi {
 	get({
-		folder,
-		download_id,
 		series_id,
+		episode_id,
 		season_number,
-		filter_existing_files,
 	}?: {
-		folder?: string;
-		download_id?: string;
 		series_id?: number;
+		episode_id?: number;
 		season_number?: number;
-		filter_existing_files?: boolean;
 	}): Promise<unknown>;
 	post(body: object): Promise<unknown>;
+	push(body: object): Promise<unknown>;
 }

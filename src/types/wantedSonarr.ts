@@ -1,3 +1,4 @@
+import type { Direction } from "./global";
 export interface WantedApi {
 	cutoff(
 		id?: number,
@@ -14,7 +15,7 @@ export interface WantedApi {
 			page?: number;
 			page_size?: number;
 			sort_key?: string;
-			sort_direction?: string;
+			sort_direction?: Direction;
 			include_series?: boolean;
 			include_images?: boolean;
 			include_episode_file?: boolean;
@@ -35,7 +36,7 @@ export interface WantedApi {
 			page?: number;
 			page_size?: number;
 			sort_key?: string;
-			sort_direction?: string;
+			sort_direction?: Direction;
 			include_series?: boolean;
 			include_images?: boolean;
 			monitored?: boolean;
