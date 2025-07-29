@@ -1,9 +1,13 @@
 {
   "name": "radson",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Radarr + Sonarr Typescript API",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "jest",
     "build": "tsc",
