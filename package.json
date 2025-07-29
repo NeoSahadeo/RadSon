@@ -1,5 +1,5 @@
 {
-  "name": "radson_test",
+  "name": "radson",
   "version": "1.0.0",
   "description": "Radarr + Sonarr Typescript API",
   "type": "module",
