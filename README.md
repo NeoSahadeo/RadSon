@@ -5,9 +5,17 @@ A unified Sonarr and Radarr Typescript API.
 - Sonarr Api -> https://sonarr.tv/docs/api/
 - Radarr Api -> https://radarr.video/docs/api/
 
+# Quickstart
+
+All endpoints are accessable via, `SharedApi`, `SonarrApi` and `RadarrApi` respectively.
+
+Some functions are only available on their specific api's, eg: You can call a movie api on sonarr.
+
+The methods are all named according to the Sonarr and Radarr api docs.
+
 # Documentation
 
-Website ->
+<!-- Website -> -->
 
 Run locally:
 
