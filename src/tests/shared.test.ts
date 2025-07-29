@@ -1,8 +1,10 @@
 import SharedAPI from "../shared";
 import SonarrApi from "../sonarr";
+import RadarrApi from "../radarr";
 
 let api: SharedAPI;
 let sonarr: SonarrApi;
+let radarr: RadarrApi;
 
 beforeAll(() => {
 	api = new SharedAPI({

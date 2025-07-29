@@ -3,7 +3,6 @@ import type { AutoTaggingApi } from "./types/autotagging";
 import type { ApiType } from "./types/global";
 import { IndexerApi } from "./types/indexer";
 import { SystemApi } from "./types/system";
-import { BlockListApi } from "./types/blocklistShared";
 import { CommandApi } from "./types/command";
 import { CustomFilterApi } from "./types/customFilter";
 import { CustomFormatApi } from "./types/customFormat";
@@ -43,7 +42,6 @@ class SharedApi {
 	autotagging: AutoTaggingApi;
 	indexer: IndexerApi;
 	system: SystemApi;
-	blocklist: BlockListApi;
 	command: CommandApi;
 	customfilter: CustomFilterApi;
 	customformat: CustomFormatApi;
@@ -88,9 +86,6 @@ class SharedApi {
 
 		this.system = {} as any;
 		this.register_system();
-
-		this.blocklist = {} as any;
-		this.register_blocklist();
 
 		this.command = {} as any;
 		this.register_command();
@@ -354,55 +349,6 @@ class SharedApi {
 		};
 	}
 
-	register_blocklist() {
-		const endpoint = "api/v3/blocklist";
-		this.blocklist.get = (
-			type,
-			{ page, page_size, sort_key, sort_direction, series_id, protocols } = {},
-		) => {
-			const query_elements = [];
-			if (page) {
-				query_elements.push("page=" + page);
-			}
-			if (page_size) {
-				query_elements.push("pageSize=" + page_size);
-			}
-			if (sort_key) {
-				query_elements.push("sortKey=" + sort_direction);
-			}
-			if (sort_direction) {
-				query_elements.push("sortDirection=" + sort_direction);
-			}
-			if (series_id && series_id.length > 0) {
-				series_id.forEach((e) => {
-					query_elements.push("seriesIds=" + e);
-				});
-			}
-			if (protocols && protocols.length > 0) {
-				protocols.forEach((e) => {
-					query_elements.push("protocols=" + e);
-				});
-			}
-			let query_string = "";
-			if (query_elements.length > 0) {
-				query_string = "?" + query_elements.join("&");
-			}
-			return this.generic_get(endpoint + query_string, type);
-		};
-		this.blocklist.delete = (type, id) => {
-			return this.generic_delete(endpoint + "/", type, id);
-		};
-		this.blocklist.delete_bulk = async (type, body) => {
-			const url = this.get_url(type) + endpoint + "/bulk";
-			const headers = this.POST_options(type) as any as AxiosHeaders;
-			return await axios({
-				url,
-				method: "DELETE",
-				headers,
-				data: body,
-			});
-		};
-	}
 	calendar({
 		type,
 		start,

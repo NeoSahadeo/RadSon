@@ -5,10 +5,9 @@ export interface QueueApi {
 		page_size,
 		sort_key,
 		sort_direction,
-		include_unknown_series_items,
-		include_series,
-		include_episode,
-		series_ids,
+		include_unknown_movie_items,
+		include_movie,
+		movie_ids,
 		protocol,
 		languages,
 		quality,
@@ -18,10 +17,9 @@ export interface QueueApi {
 		page_size?: number;
 		sort_key?: string;
 		sort_direction?: Direction;
-		include_unknown_series_items?: boolean;
-		include_series?: boolean;
-		include_episode?: boolean;
-		series_ids?: number[];
+		include_unknown_movie_items?: boolean;
+		include_movie?: boolean;
+		movie_ids?: number[];
 		protocol?: Protocol;
 		languages?: number[];
 		quality?: number[];
@@ -58,15 +56,11 @@ export interface QueueApi {
 	grab(id: number): Promise<unknown>;
 	grab_bulk(body: object): Promise<unknown>;
 	details({
-		series_id,
-		episode_ids,
-		include_series,
-		include_episode,
+		movie_id,
+		include_movie,
 	}?: {
-		series_id?: number;
-		episode_ids?: number[];
-		include_series?: boolean;
-		include_episode?: boolean;
+		movie_id?: number;
+		include_movie?: boolean;
 	}): Promise<unknown>;
 	status(): Promise<unknown>;
 }

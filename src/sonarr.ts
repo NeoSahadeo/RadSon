@@ -11,6 +11,8 @@ import { ImportListExclusionApi } from "./types/importListExclusionSonarr";
 import { ReleaseApi } from "./types/releaseSonarr";
 import { ReleaseProfileApi } from "./types/releaseProfileSonarr";
 import { QueueApi } from "./types/queueSonarr";
+import { BlockListApi } from "./types/blocklistSonarr";
+import { ManualImportApi } from "./types/manualImportSonarr";
 
 /**
  * SonarrApi class is the sonarr endpoint where sonarr specific endpoints
@@ -37,6 +39,7 @@ class SonarrApi {
 	release: ReleaseApi;
 	releaseprofile: ReleaseProfileApi;
 	queue: QueueApi;
+	blocklist: BlockListApi;
 
 	// once-off
 	config: any;
@@ -91,9 +94,12 @@ class SonarrApi {
 		this.queue = {} as any;
 		this.register_queue();
 
+		this.blocklist = {} as any;
+		this.register_blocklist();
+
 		// register endpoints once-off
 		this.config = {};
-		this.register_once_off_config = {};
+		this.register_once_off_config();
 	}
 
 	get_headers() {
@@ -111,13 +117,24 @@ class SonarrApi {
 		);
 	}
 	async generic_post(endpoint: string, body: object) {
-		return await axios.post(endpoint, body, this.get_headers());
+		return await axios.post(
+			this.sonarr_addr + endpoint,
+			body,
+			this.get_headers(),
+		);
 	}
 	async generic_put(endpoint: string, body: object, id: number) {
-		return await axios.put(endpoint + id, body, this.get_headers());
+		return await axios.put(
+			this.sonarr_addr + endpoint + id,
+			body,
+			this.get_headers(),
+		);
 	}
 	async generic_delete(endpoint: string, id?: number | undefined) {
-		return await axios.delete(endpoint + (id ? id : ""), this.get_headers());
+		return await axios.delete(
+			this.sonarr_addr + endpoint + (id ? id : ""),
+			this.get_headers(),
+		);
 	}
 
 	register_calendar() {
@@ -478,6 +495,7 @@ class SonarrApi {
 			);
 		};
 	}
+
 	register_history() {
 		const endpoint = "api/v3/history";
 		this.history.get = ({
@@ -805,6 +823,7 @@ class SonarrApi {
 			return this.generic_get("api/v3/config/naming/examples" + query_string);
 		};
 	}
+
 	register_release() {
 		const endpoint = "api/v3/release";
 		this.release.get = ({ series_id, episode_id, season_number } = {}) => {
@@ -829,6 +848,7 @@ class SonarrApi {
 	}
 
 	register_releaseprofile() {
+		// might move to shared
 		const endpoint = "api/v3/releaseprofile/";
 		this.releaseprofile.get = (...args) => this.generic_get(endpoint, ...args);
 		this.releaseprofile.post = (...args) =>
@@ -862,7 +882,7 @@ class SonarrApi {
 			if (query_elements.length > 0) {
 				query_string = "?" + query_elements.join("&");
 			}
-			return this.generic_delete(endpoint + query_string, id);
+			return this.generic_delete(endpoint + "/" + id + query_string);
 		};
 		this.queue.delete_bulk = async (
 			body,
@@ -936,7 +956,7 @@ class SonarrApi {
 			}
 			if (series_ids) {
 				series_ids.forEach((e) => {
-					query_elements.push("series_ids=" + e);
+					query_elements.push("seriesIds=" + e);
 				});
 			}
 			if (protocol) {
@@ -1003,6 +1023,60 @@ class SonarrApi {
 			return this.generic_get(endpoint + "/details" + query_string);
 		};
 		this.queue.status = () => this.generic_get(endpoint + "/status");
+	}
+
+	register_blocklist() {
+		const endpoint = "api/v3/blocklist";
+		this.blocklist.get = ({
+			page,
+			page_size,
+			sort_key,
+			sort_direction,
+			series_ids,
+			protocols,
+		} = {}) => {
+			const query_elements = [];
+			if (page) {
+				query_elements.push("page=" + page);
+			}
+			if (page_size) {
+				query_elements.push("pageSize=" + page_size);
+			}
+			if (sort_key) {
+				query_elements.push("sortKey=" + sort_direction);
+			}
+			if (sort_direction) {
+				query_elements.push("sortDirection=" + sort_direction);
+			}
+			if (series_ids && series_ids.length > 0) {
+				series_ids.forEach((e) => {
+					query_elements.push("seriesIds=" + e);
+				});
+			}
+			if (protocols && protocols.length > 0) {
+				protocols.forEach((e) => {
+					query_elements.push("protocols=" + e);
+				});
+			}
+			let query_string = "";
+			if (query_elements.length > 0) {
+				query_string = "?" + query_elements.join("&");
+			}
+			return this.generic_get(endpoint + query_string);
+		};
+		this.blocklist.delete = (id) => {
+			return this.generic_delete(endpoint + "/", id);
+		};
+		this.blocklist.delete_bulk = async (body) => {
+			const url = this.sonarr_addr + endpoint + "/bulk";
+			const headers = this.get_headers() as any as AxiosHeaders;
+			return await axios({
+				url,
+				method: "DELETE",
+				headers,
+				data: body,
+			});
+		};
 	}
 }
 export default SonarrApi;

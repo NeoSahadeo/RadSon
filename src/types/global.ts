@@ -10,7 +10,7 @@ export type SonarrEventType =
 	| "episodeFileDeleted"
 	| "episodeFileRenamed"
 	| "downloadIgnored";
-export type SonarrStatusType =
+export type StatusType =
 	| "unknown"
 	| "queued"
 	| "paused"
@@ -21,3 +21,12 @@ export type SonarrStatusType =
 	| "delay"
 	| "downloadClientUnavailable"
 	| "fallbacK";
+export type RadarrEventType =
+	| "unknown"
+	| "grabbed"
+	| "downloadFolderImported"
+	| "downloadFailed"
+	| "movieFileDeleted"
+	| "movieFolderImported"
+	| "movieFileRenamed"
+	| "downloadIgnore";
