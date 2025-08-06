@@ -1,6 +1,6 @@
 {
   "name": "radson",
-  "version": "1.0.32",
+  "version": "1.0.36",
   "description": "Radarr + Sonarr Typescript API",
   "type": "module",
   "main": "./dist/index.js",

@@ -85,6 +85,7 @@ class SharedApi {
 		this.register_indexer();
 
 		this.system = {} as any;
+		this.system.backup = {} as any;
 		this.register_system();
 
 		this.command = {} as any;
@@ -106,6 +107,13 @@ class SharedApi {
 		this.register_downloadclient();
 
 		this.config = {} as any;
+		this.config.importlist = {} as any;
+		this.config.ui = {} as any;
+		this.config.host = {} as any;
+		this.config.naming = {} as any;
+		this.config.indexer = {} as any;
+		this.config.downloadclient = {} as any;
+		this.config.mediamanagement = {} as any;
 		this.register_config();
 
 		this.filesystem = {} as any;
@@ -118,6 +126,8 @@ class SharedApi {
 		this.register_localization();
 
 		this.log = {} as any;
+		this.log.file = {} as any;
+		this.log.file.update = {} as any;
 		this.register_log();
 
 		this.tag = {} as any;

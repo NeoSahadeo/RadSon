@@ -51,6 +51,8 @@ class RadarrApi {
 
 		// register endpoints
 		this.movie = {} as any;
+		this.movie.editor = {} as any;
+		this.movie.lookup = {} as any;
 		this.register_movie();
 
 		this.moviefile = {} as any;
@@ -69,9 +71,11 @@ class RadarrApi {
 		this.register_exclusion();
 
 		this.importlist = {} as any;
+		this.importlist.movie = {} as any;
 		this.register_importlist();
 
 		this.config = {} as any;
+		this.config.metadata = {} as any;
 		this.register_config();
 
 		this.manualimport = {} as any;
@@ -88,6 +92,7 @@ class RadarrApi {
 
 		// register endpoints once-off
 		this.config = {} as any;
+		(this.config as any).naming = {} as any;
 		this.register_once_off_config();
 	}
 	get_headers() {

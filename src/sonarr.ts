@@ -56,9 +56,11 @@ class SonarrApi {
 
 		// register endpoints
 		this.calendar = {} as any;
+		this.calendar.sonarr = {} as any;
 		this.register_calendar();
 
 		this.series = {} as any;
+		this.series.editor = {} as any;
 		this.register_series();
 
 		this.wanted = {} as any;
@@ -99,6 +101,7 @@ class SonarrApi {
 
 		// register endpoints once-off
 		this.config = {};
+		this.config.naming = {} as any;
 		this.register_once_off_config();
 	}
 
