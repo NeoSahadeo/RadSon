@@ -272,9 +272,9 @@ class SonarrApi {
 		this.series.folder = (id) => {
 			return this.generic_get(endpoint + "/" + id + "/folder");
 		};
-		this.series.lookup = (term) => {
+		this.series.lookup = async (term) => {
 			return this.generic_get(
-				endpoint + "/lookup" + term !== undefined ? "?term=" + term : "",
+				endpoint + "/lookup" + (term !== undefined ? "?term=" + term : ""),
 			);
 		};
 		this.series.import = (body) =>
