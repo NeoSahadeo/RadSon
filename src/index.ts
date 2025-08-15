@@ -1,5 +1,3 @@
-import SharedApi from "./shared";
-import SonarrApi from "./sonarr";
-import RadarrApi from "./radarr";
+import Radson from "./radson";
 
-export { SharedApi, SonarrApi, RadarrApi };
+export { Radson };

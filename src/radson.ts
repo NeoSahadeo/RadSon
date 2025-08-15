@@ -1,0 +1,271 @@
+import axios, { AxiosResponse } from "axios";
+import { SonarrConfig } from "./types/sonarrTypes";
+import { RadarrConfig } from "./types/radarrTypes";
+import { Direction, ParamsMap } from "./types/global";
+
+type RadsonConfig = SonarrConfig | RadarrConfig;
+
+type type = "series" | "movie";
+type DBType = "tmdb" | "imdb" | "tvdb";
+
+const normalize_address = (addr: string) => {
+	const base = new URL(addr);
+	base.pathname = base.pathname.endsWith("/")
+		? base.pathname + "api/v3"
+		: base.pathname + "/api/v3";
+	return base.toString();
+};
+
+const prepare_headers = (api_key: string) => {
+	return {
+		"Content-Type": "application/json",
+		accept: "application/json",
+		"X-Api-Key": api_key,
+	};
+};
+
+export default class Radson {
+	sonarr_api_key?: string;
+	sonarr_address?: string;
+	radarr_api_key?: string;
+	radarr_address?: string;
+
+	constructor(config: RadsonConfig) {
+		if ("sonarr_api_key" in config && "sonarr_address" in config) {
+			this.sonarr_api_key = config.sonarr_api_key;
+			this.sonarr_address = normalize_address(config.sonarr_address);
+		}
+		if ("radarr_api_key" in config && "radarr_address" in config) {
+			this.radarr_api_key = config.radarr_api_key;
+			this.radarr_address = normalize_address(config.radarr_address);
+		}
+	}
+
+	private async fetch_local_data(type: type, db_type: DBType, id: number) {
+		let url = null;
+		if (type === "series") {
+			url = `${this.sonarr_address}/${type}?${db_type}Id=${id}`;
+		} else {
+			url = `${this.radarr_address}/${type}?${db_type}Id=${id}`;
+		}
+		console.log(url);
+		return await axios.get(url as string, {
+			headers: prepare_headers(
+				type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+			),
+		});
+	}
+
+	private async lookup_data(
+		type: type,
+		db_type: DBType,
+		id: number,
+		include_id = false,
+	) {
+		let url = null;
+		// retards made this api endpoint. why the hell are
+		// the endpoints so different and so random?!
+		if (type === "series") {
+			if (db_type === "tvdb") {
+				url = `${this.sonarr_address}/${type}/lookup?term=${id}`;
+			}
+			if (db_type === "tmdb") {
+				url = `${this.sonarr_address}/${type}/lookup?term=tmdbId:${id}`;
+			}
+		} else {
+			// This also returns a different result for some reason. Literally how is their
+			// codebase so garbage???
+			if (include_id)
+				url = `${this.radarr_address}/${type}/lookup?term=${db_type}Id:${id}`;
+			else
+				url = `${this.radarr_address}/${type}/lookup/${db_type}?${db_type}Id=${id}`;
+		}
+		return await axios.get(url as string, {
+			headers: prepare_headers(
+				type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+			),
+		});
+	}
+
+	lookup_sonarr_tmdb = async (id: any) =>
+		await this.lookup_data("series", "tmdb", id);
+	lookup_sonarr_tvdb = async (id: number) =>
+		await this.lookup_data("series", "tvdb", id);
+	lookup_radarr_tmdb = async (id: number) =>
+		await this.lookup_data("movie", "tmdb", id);
+	lookup_radarr_imdb = async (id: number) =>
+		await this.lookup_data("movie", "imdb", id);
+
+	private async monitor_series(
+		db_type: DBType,
+		id: any,
+		monitor: boolean,
+		seasons: number[],
+	) {
+		const r = await this.lookup_data("series", db_type, id);
+		if (r.status !== 200)
+			throw `[Radson Monitor Series] Data status: ${r.status}, id: ${id}, db_type: ${db_type}`;
+		const data = { ...r.data[0] };
+
+		if (seasons.length == 0) {
+			for (let x = 0; x < data["seasons"].length; x++) {
+				data["seasons"][x]["monitored"] = monitor;
+			}
+		} else {
+			if (!data.id) {
+				for (let x = 0; x < data["seasons"].length; x++) {
+					data["seasons"][x]["monitored"] = false;
+				}
+			}
+			for (let x = 0; x < data["seasons"].length; x++) {
+				if (seasons.includes(data["seasons"][x]["seasonNumber"])) {
+					data["seasons"][x]["monitored"] = monitor;
+				}
+			}
+		}
+
+		// No id exists on items that
+		// have not been previously tracked
+		if (!data.id) {
+			const root_folder = await axios.get(`${this.sonarr_address}/rootfolder`, {
+				headers: prepare_headers(this.sonarr_api_key!),
+			});
+			if (root_folder.status !== 200)
+				throw `[Radson Monitor Series] Root folder status: ${root_folder.status}`;
+			data["rootFolderPath"] = root_folder.data[0].path;
+			data["addOptions"] = {
+				searchForMissingEpisodes: true,
+				searchForCutoffUnmetEpisodes: true,
+			};
+			data["qualityProfileId"] = 1;
+			return await axios({
+				url: `${this.sonarr_address}/series`,
+				data: data,
+				method: "POST",
+				headers: prepare_headers(this.sonarr_api_key!),
+			});
+		}
+		return await axios({
+			url: `${this.sonarr_address}/series/${data.id}`,
+			data: data,
+			method: "PUT",
+			headers: prepare_headers(this.sonarr_api_key!),
+		});
+	}
+
+	monitor_series_tvdb = async (
+		id: any,
+		monitor?: boolean,
+		seasons?: number[],
+	) => await this.monitor_series("tvdb", id, monitor ?? true, seasons ?? []);
+	monitor_series_tmdb = async (
+		id: any,
+		monitor?: boolean,
+		seasons?: number[],
+	) => await this.monitor_series("tmdb", id, monitor ?? true, seasons ?? []);
+
+	private async monitor_movie(db_type: DBType, id: any, monitor: boolean) {
+		let r = await this.lookup_data("movie", db_type, id);
+		if (r.status !== 200)
+			throw `[Radson Monitor Movie] Data status: ${r.status}, id: ${id}, db_type: ${db_type}`;
+		const data = { ...r.data };
+
+		const root_folder = await axios.get(`${this.radarr_address}/rootfolder`, {
+			headers: prepare_headers(this.radarr_api_key!),
+		});
+		if (root_folder.status !== 200)
+			throw `[Radson Monitor Series] Root folder status: ${root_folder.status}`;
+		data["rootFolderPath"] = root_folder.data[0].path;
+		data["qualityProfileId"] = 1;
+
+		await axios({
+			url: `${this.radarr_address}/movie`,
+			data: data,
+			method: "POST",
+			headers: prepare_headers(this.radarr_api_key!),
+			// why does this function not the same as sonarr? Don't know, seen more logic
+			// by climate activists glueing their hands to the roads!
+			validateStatus: function(status) {
+				return (status >= 200 && status < 300) || status === 400;
+			},
+		});
+
+		let r_2 = await this.lookup_data("movie", db_type, id, true);
+		if (r_2.status !== 200)
+			throw `[Radson Monitor Movie] Data status, after d_1: ${r_2.status}, id: ${id}, db_type: ${db_type}`;
+		const updated_data = { ...r_2.data[0] };
+		updated_data["monitored"] = monitor;
+		updated_data["qualityProfileId"] = 1;
+		updated_data["path"] = updated_data["folderName"];
+		return await axios({
+			url: `${this.radarr_address}/movie/${updated_data.id}`,
+			data: updated_data,
+			method: "PUT",
+			headers: prepare_headers(this.radarr_api_key!),
+		});
+	}
+
+	monitor_movie_tmdb = async (id: any, monitor?: boolean) =>
+		this.monitor_movie("tmdb", id, monitor ?? true);
+	monitor_movie_imdb = async (id: any, monitor?: boolean) =>
+		this.monitor_movie("imdb", id, monitor ?? true);
+
+	async get_missing_series({
+		episode_id,
+		page,
+		page_size,
+		sort_key,
+		sort_direction,
+		include_series,
+		include_images,
+		monitored,
+	}: {
+		episode_id?: number;
+		page?: number;
+		page_size?: number;
+		sort_key?: string;
+		sort_direction?: Direction;
+		include_series?: boolean;
+		include_images?: boolean;
+		include_episode_file?: boolean;
+		monitored?: boolean;
+	} = {}) {
+		if (episode_id) {
+			return await axios.get(
+				`${this.sonarr_address}/wanted/missing/${episode_id}`,
+				{
+					headers: prepare_headers(this.sonarr_api_key!),
+				},
+			);
+		}
+
+		if (arguments[0] === undefined) {
+			return await axios.get(`${this.sonarr_address}/wanted/missing`, {
+				headers: prepare_headers(this.sonarr_api_key!),
+			});
+		}
+
+		const query_params = Object.entries(ParamsMap)
+			.filter(([key]) => {
+				const value = (arguments[0] as any)[key];
+				// To also allow false boolean params like monitored = false to be sent,
+				// check explicitly for undefined or null
+				return value !== undefined && value !== null;
+			})
+			.map(([param_key, query_key]) => {
+				let value = (arguments[0] as any)[param_key];
+				// If boolean, convert to string lowercase
+				if (typeof value === "boolean") {
+					value = value.toString().toLowerCase();
+				}
+				return `${query_key}=${encodeURIComponent(value)}`;
+			});
+
+		return await axios.get(
+			`${this.sonarr_address}/wanted/missing?${query_params.join("&")}`,
+			{
+				headers: prepare_headers(this.sonarr_api_key!),
+			},
+		);
+	}
+}
