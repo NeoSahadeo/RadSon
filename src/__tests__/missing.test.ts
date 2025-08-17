@@ -12,3 +12,8 @@ test.only("Test missing series", async () => {
 	// });
 	// expect(r_2.status).toBe(200);
 });
+
+test.only("Test missing movies", async () => {
+	const r_1 = await radson.get_missing_movies();
+	expect(r_1.status).toBe(200);
+});

@@ -24,6 +24,24 @@ const prepare_headers = (api_key: string) => {
 	};
 };
 
+const prepare_query = (args: IArguments) => {
+	return Object.entries(ParamsMap)
+		.filter(([key]) => {
+			const value = (args[0] as any)[key];
+			// To also allow false boolean params like monitored = false to be sent,
+			// check explicitly for undefined or null
+			return value !== undefined && value !== null;
+		})
+		.map(([param_key, query_key]) => {
+			let value = (args[0] as any)[param_key];
+			// If boolean, convert to string lowercase
+			if (typeof value === "boolean") {
+				value = value.toString().toLowerCase();
+			}
+			return `${query_key}=${encodeURIComponent(value)}`;
+		});
+};
+
 export default class Radson {
 	sonarr_api_key?: string;
 	sonarr_address?: string;
@@ -41,19 +59,18 @@ export default class Radson {
 		}
 	}
 
-	private async fetch_local_data(type: type, db_type: DBType, id: number) {
-		let url = null;
-		if (type === "series") {
-			url = `${this.sonarr_address}/${type}?${db_type}Id=${id}`;
-		} else {
-			url = `${this.radarr_address}/${type}?${db_type}Id=${id}`;
-		}
-		console.log(url);
-		return await axios.get(url as string, {
-			headers: prepare_headers(
-				type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
-			),
-		});
+	private async fetch_local_data(type: type, db_type: DBType, id: any) {
+		const r = await axios.get(
+			`${type === "series" ? this.sonarr_address : this.radarr_address}/${type}`,
+			{
+				headers: prepare_headers(
+					type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+				),
+			},
+		);
+		// this endpoint is broken so this is the best fix
+		const q = r.data.filter((e: any) => e[`${db_type}Id`] === id);
+		return q.length > 0 ? q[0] : q;
 	}
 
 	private async lookup_data(
@@ -245,22 +262,7 @@ export default class Radson {
 			});
 		}
 
-		const query_params = Object.entries(ParamsMap)
-			.filter(([key]) => {
-				const value = (arguments[0] as any)[key];
-				// To also allow false boolean params like monitored = false to be sent,
-				// check explicitly for undefined or null
-				return value !== undefined && value !== null;
-			})
-			.map(([param_key, query_key]) => {
-				let value = (arguments[0] as any)[param_key];
-				// If boolean, convert to string lowercase
-				if (typeof value === "boolean") {
-					value = value.toString().toLowerCase();
-				}
-				return `${query_key}=${encodeURIComponent(value)}`;
-			});
-
+		const query_params = prepare_query(arguments);
 		return await axios.get(
 			`${this.sonarr_address}/wanted/missing?${query_params.join("&")}`,
 			{
@@ -268,4 +270,112 @@ export default class Radson {
 			},
 		);
 	}
+
+	async get_missing_movies({
+		page,
+		page_size,
+		sort_key,
+		sort_direction,
+		monitored,
+	}: {
+		page?: number;
+		page_size?: number;
+		sort_key?: string;
+		sort_direction?: Direction;
+		include_series?: boolean;
+		monitored?: boolean;
+	} = {}) {
+		const query_params = prepare_query(arguments);
+		return await axios.get(
+			`${this.sonarr_address}/wanted/missing?${query_params.join("&")}`,
+			{
+				headers: prepare_headers(this.sonarr_api_key!),
+			},
+		);
+	}
+
+	private async get_queue(
+		type: type | "all",
+		db_type?: DBType | null,
+		id?: number | null,
+		override?: boolean, // specify all data
+	) {
+		if (override) {
+			const _get_series = async () => {
+				return await axios.get(`${this.sonarr_address}/queue/details`, {
+					headers: prepare_headers(this.sonarr_api_key!),
+				});
+			};
+			const _get_movie = async () => {
+				return await axios.get(`${this.radarr_address}/queue/details`, {
+					headers: prepare_headers(this.radarr_api_key!),
+				});
+			};
+
+			const arr = [];
+			if (type === "series") {
+				arr.push(await _get_series());
+			} else if (type === "movie") {
+				arr.push(await _get_movie());
+			} else {
+				arr.push(await _get_series());
+				arr.push(await _get_movie());
+			}
+
+			let obj = {} as AxiosResponse;
+			arr.forEach((e) => (obj = { ...e, ...obj }));
+			return obj;
+		}
+
+		let id_prefix = "";
+		if (type === "series") {
+			id_prefix = "?seriesId=";
+		} else if (type === "movie") {
+			id_prefix = "?movieId=";
+		}
+
+		if (id) {
+			const r = await this.fetch_local_data(type as type, db_type!, id);
+			id = r["id"];
+		}
+
+		console.log(
+			`${type === "series" ? this.sonarr_address : this.radarr_address}/queue/details${id_prefix}${id !== null ? id : ""}`,
+		);
+		return await axios.get(
+			`${type === "series" ? this.sonarr_address : this.radarr_address}/queue/details${id_prefix}${id !== null ? id : ""}`,
+			{
+				headers: prepare_headers(
+					type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+				),
+			},
+		);
+	}
+	get_queue_series_tvdb = async (id: number) =>
+		this.get_queue("series", "tvdb", id);
+	get_queue_series_tmdb = async (id: number) =>
+		this.get_queue("series", "tmdb");
+	get_queue_series_all = async () => this.get_queue("series", null, null, true);
+	get_queue_movie_tmdb = async (id: number) =>
+		this.get_queue("movie", "tmdb", id ?? null);
+	get_queue_movie_imdb = async (id: any) =>
+		this.get_queue("movie", "imdb", id ?? null);
+	get_queue_movie_all = async () => this.get_queue("movie", null, null, true);
+	get_queue_all = async () => this.get_queue("all", null, null, true);
+
+	private async delete_queue(type: type, ids: number[]) {
+		return await axios.delete(
+			`${this.sonarr_address}/queue/bulk?removeFromClient=true&blocklist=false&skipRedownload=false&changeCategory=false`,
+			{
+				data: { ids: ids },
+				headers: prepare_headers(
+					type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+				),
+			},
+		);
+	}
+	delete_queue_series = async (ids: number[]) =>
+		this.delete_queue("series", ids);
+	delete_queue_movie = async (ids: number[]) => this.delete_queue("movie", ids);
+	// http://localhost:8989/api/v3/release?seriesId=113&seasonNumber=2
 }

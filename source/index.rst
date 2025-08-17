@@ -8,6 +8,8 @@ Documentation for the Radson API.
 
    lookup.rst
    monitor.rst
+   missing.rst
+   queue.rst
 
 Getting Started
 ---------------
