@@ -59,7 +59,7 @@ export default class Radson {
 		}
 	}
 
-	private async fetch_local_data(type: type, db_type: DBType, id: any) {
+	async fetch_local_data(type: type, db_type: DBType, id: any) {
 		const r = await axios.get(
 			`${type === "series" ? this.sonarr_address : this.radarr_address}/${type}`,
 			{
@@ -69,8 +69,11 @@ export default class Radson {
 			},
 		);
 		// this endpoint is broken so this is the best fix
-		const q = r.data.filter((e: any) => e[`${db_type}Id`] === id);
-		return q.length > 0 ? q[0] : q;
+		r.data = r.data.filter((e: any) => e[`${db_type}Id`] === id);
+		if (r.data.length > 0) {
+			r.data = r.data[0];
+		}
+		return r;
 	}
 
 	private async lookup_data(
@@ -285,7 +288,10 @@ export default class Radson {
 		include_series?: boolean;
 		monitored?: boolean;
 	} = {}) {
-		const query_params = prepare_query(arguments);
+		let query_params: any[] = [];
+		if (arguments[0] !== undefined) {
+			query_params = prepare_query(arguments);
+		}
 		return await axios.get(
 			`${this.sonarr_address}/wanted/missing?${query_params.join("&")}`,
 			{
@@ -328,20 +334,17 @@ export default class Radson {
 		}
 
 		let id_prefix = "";
-		if (type === "series") {
-			id_prefix = "?seriesId=";
-		} else if (type === "movie") {
-			id_prefix = "?movieId=";
-		}
 
 		if (id) {
+			if (type === "series") {
+				id_prefix = "?seriesId=";
+			} else if (type === "movie") {
+				id_prefix = "?movieId=";
+			}
 			const r = await this.fetch_local_data(type as type, db_type!, id);
-			id = r["id"];
+			id = r.data["id"];
 		}
 
-		console.log(
-			`${type === "series" ? this.sonarr_address : this.radarr_address}/queue/details${id_prefix}${id !== null ? id : ""}`,
-		);
 		return await axios.get(
 			`${type === "series" ? this.sonarr_address : this.radarr_address}/queue/details${id_prefix}${id !== null ? id : ""}`,
 			{
@@ -351,16 +354,14 @@ export default class Radson {
 			},
 		);
 	}
-	get_queue_series_tvdb = async (id: number) =>
-		this.get_queue("series", "tvdb", id);
-	get_queue_series_tmdb = async (id: number) =>
-		this.get_queue("series", "tmdb");
-	get_queue_series_all = async () => this.get_queue("series", null, null, true);
-	get_queue_movie_tmdb = async (id: number) =>
+	get_queue_series_tvdb = async (id?: number) =>
+		this.get_queue("series", "tvdb", id ?? null);
+	get_queue_series_tmdb = async (id?: number) =>
+		this.get_queue("series", "tmdb", id ?? null);
+	get_queue_movie_tmdb = async (id?: number) =>
 		this.get_queue("movie", "tmdb", id ?? null);
-	get_queue_movie_imdb = async (id: any) =>
+	get_queue_movie_imdb = async (id?: any) =>
 		this.get_queue("movie", "imdb", id ?? null);
-	get_queue_movie_all = async () => this.get_queue("movie", null, null, true);
 	get_queue_all = async () => this.get_queue("all", null, null, true);
 
 	private async delete_queue(type: type, ids: number[]) {

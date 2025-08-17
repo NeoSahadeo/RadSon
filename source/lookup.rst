@@ -1,6 +1,13 @@
 Lookup Requests
 ===============
 
+These methods provide the ability to get the data of a show.
+
+It's split into lookup and fetch, where lookup is general
+data from Sonarr and Radarr, and, fetch is local data
+from Sonarr and Radarr (local data meaning it contains the
+show's internal reference ID and other variances).
+
 Methods
 -------
 
@@ -14,7 +21,19 @@ Methods
 
   async lookup_radarr_imdb(id: number)
 
+
+.. code-block:: typescript
+
+  async fetch_local_data(type: type, db_type: DBType, id: any)
+
 All lookup methods take in an ID of the respective type.
+
+.. note::
+
+  ``fetch_local_data`` is an internal method that I've decided to
+  make available publically, so it requires more effort to use.
+
+  The ID must match the DBType and type union.
 
 
 Example code:

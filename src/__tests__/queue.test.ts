@@ -5,12 +5,6 @@ test.only("Test queue fetch", async () => {
 	const r_1 = await radson.get_queue_series_tmdb(119051);
 	expect(r_1.status).toBe(200);
 
-	const r_2 = await radson.get_queue_series_all();
-	expect(r_2.status).toBe(200);
-
-	const r_3 = await radson.get_queue_movie_all();
-	expect(r_3.status).toBe(200);
-
 	const r_4 = await radson.get_queue_all();
 	expect(r_4.status).toBe(200);
 
