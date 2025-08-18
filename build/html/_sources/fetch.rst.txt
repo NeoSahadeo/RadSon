@@ -1,0 +1,17 @@
+Fetch Requests
+==============
+
+**Async**
+
+- ``fetch_sonarr_tvdb``
+- ``fetch_sonarr_tvdb``
+- ``fetch_radarr_tmdb``
+- ``fetch_radarr_imdb``
+
+All fetch methods take in an ID of the respective type.
+
+Example code:
+
+.. code-block:: typescript
+
+  await radson.fetch_sonarr_tvdb(157239)

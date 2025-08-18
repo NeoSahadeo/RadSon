@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Queue &#8212; Radson 1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'queue';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Missing" href="missing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://i.imgur.com/ruZFtSF.png" class="logo__image only-light" alt="Radson 1 documentation - Home"/>
+    <script>document.write(`<img src="https://i.imgur.com/ruZFtSF.png" class="logo__image only-dark" alt="Radson 1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lookup.html">Lookup Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitor.html">Monitor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="missing.html">Missing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Queue</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/queue.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Queue</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-methods">GET Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-items-in-queue">Get Items in Queue</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-search">Interactive Search</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#delete-methods">DELETE Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-methods">POST Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitored-search">Monitored Search</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-interactive-search-results">Using interactive search results</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="queue">
+<h1>Queue<a class="headerlink" href="#queue" title="Link to this heading">#</a></h1>
+<p>Get the current its in the queue.</p>
+<section id="get-methods">
+<h2>GET Methods<a class="headerlink" href="#get-methods" title="Link to this heading">#</a></h2>
+<section id="get-items-in-queue">
+<h3>Get Items in Queue<a class="headerlink" href="#get-items-in-queue" title="Link to this heading">#</a></h3>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">get_queue_series_tvdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_queue_series_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_queue_movie_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_queue_movie_imdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_queue_all</span><span class="w"> </span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Leaving the ID empty (null) means get all of that type
+from the queue.</p>
+</div>
+<p>Example code:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="nx">radson</span><span class="p">.</span><span class="nx">get_queue_series_tmdb</span><span class="p">(</span><span class="mf">119051</span><span class="p">);</span>
+
+<span class="nx">radson</span><span class="p">.</span><span class="nx">get_queue_all</span><span class="p">();</span>
+
+<span class="nx">radson</span><span class="p">.</span><span class="nx">get_queue_movie_imdb</span><span class="p">(</span><span class="s2">&quot;tt4154796&quot;</span><span class="p">);</span>
+
+<span class="nx">radson</span><span class="p">.</span><span class="nx">get_queue_movie_tmdb</span><span class="p">(</span><span class="mf">299534</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="interactive-search">
+<span id="is"></span><h3>Interactive Search<a class="headerlink" href="#interactive-search" title="Link to this heading">#</a></h3>
+<p>The interactive search is used to get torrent links, below how to send
+post requests <a class="reference internal" href="#using-interactive-search-results">Using interactive search results</a>.</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">get_interactive_queue_series_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">season</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_interactive_queue_series_tvdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">season</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_interactive_queue_movie_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_interactive_queue_movie_imdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="delete-methods">
+<h2>DELETE Methods<a class="headerlink" href="#delete-methods" title="Link to this heading">#</a></h2>
+<p>The IDs refers to the internal mappings of the queue.
+They cannot be known without first quering what is in
+the queue.</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">delete_queue_series</span><span class="w"> </span><span class="p">(</span><span class="nx">ids</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">[])</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">delete_queue_movie</span><span class="w"> </span><span class="p">(</span><span class="nx">ids</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">[])</span>
+</pre></div>
+</div>
+<p>Example Code:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="nx">radson</span><span class="p">.</span><span class="nx">delete_queue_series</span><span class="p">([</span><span class="mf">505836865</span><span class="p">]);</span><span class="w"> </span><span class="c1">// 505836865 is the internal id of one of the queue items.</span>
+</pre></div>
+</div>
+</section>
+<section id="post-methods">
+<h2>POST Methods<a class="headerlink" href="#post-methods" title="Link to this heading">#</a></h2>
+<p>There is 1 POST method provided. This is a generic command
+to search for the monitored series / movie.</p>
+<section id="monitored-search">
+<h3>Monitored Search<a class="headerlink" href="#monitored-search" title="Link to this heading">#</a></h3>
+<p>These methods will start the search and download of monitored series.</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">search_monitored_series_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">search_monitored_series_tvdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">search_monitored_movie_tmdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">search_monitored_movie_imdb</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-interactive-search-results">
+<span id="isr"></span><h3>Using interactive search results<a class="headerlink" href="#using-interactive-search-results" title="Link to this heading">#</a></h3>
+<p>In order to use the results of the <a class="reference internal" href="#interactive-search">Interactive Search</a>
+one will need to send a <strong>POST</strong> request like it is shown below.
+It works the same for both Radarr and Sonarr.
+This will start the download for the request torrent.</p>
+<p>The endpoint is <code class="docutils literal notranslate"><span class="pre">/release</span></code> and the data looks like so</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;guid&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;[GUID_DATA]&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;indexerId&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">INDEXER_ID</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="nx">fetch</span><span class="p">([</span><span class="nx">API_ADDRESS</span><span class="p">]</span><span class="o">/</span><span class="nx">api</span><span class="o">/</span><span class="nx">v3</span><span class="o">/</span><span class="nx">release</span><span class="p">,{</span>
+<span class="w">        </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{[</span><span class="nx">API_KEY</span><span class="p">]}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="missing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Missing</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-methods">GET Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-items-in-queue">Get Items in Queue</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-search">Interactive Search</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#delete-methods">DELETE Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-methods">POST Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitored-search">Monitored Search</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-interactive-search-results">Using interactive search results</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By NeoSahadeo
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright Neo Sahadeo - All Rights Reserved.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
