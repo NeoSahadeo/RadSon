@@ -154,8 +154,8 @@ export default class Radson {
 				throw `[Radson Monitor Series] Root folder status: ${root_folder.status}`;
 			data["rootFolderPath"] = root_folder.data[0].path;
 			data["addOptions"] = {
-				searchForMissingEpisodes: true,
-				searchForCutoffUnmetEpisodes: true,
+				searchForMissingEpisodes: false,
+				searchForCutoffUnmetEpisodes: false,
 			};
 			data["qualityProfileId"] = 1;
 			return await axios({
