@@ -1,7 +1,6 @@
 import { radson } from "../test_exports";
 
 test.only("Test queue fetch", async () => {
-	// manual
 	const r_1 = await radson.get_queue_series_tmdb(119051);
 	expect(r_1.status).toBe(200);
 
@@ -20,3 +19,19 @@ test.only("Test queue delete", async () => {
 	const r_1 = await radson.delete_queue_series([505836865]);
 	expect(r_1.status).toBe(200);
 });
+
+test.only("Test search monitored", async () => {
+	const r_1 = await radson.search_monitored_series_tmdb(119051);
+	expect(r_1.status).toBe(201);
+
+	const r_2 = await radson.search_monitored_movie_imdb("tt5950044");
+	expect(r_2.status).toBe(201);
+}, 20_000); // 20 secs
+
+test.only("Test queue interactive search", async () => {
+	const r_1 = await radson.get_interactive_queue_series_tmdb(119051, 2);
+	expect(r_1.status).toBe(200);
+
+	const r_2 = await radson.get_interactive_queue_movie_imdb("tt4154796");
+	expect(r_2.status).toBe(200);
+}, 20_000); // 20secs

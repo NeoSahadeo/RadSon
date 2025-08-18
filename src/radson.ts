@@ -378,5 +378,69 @@ export default class Radson {
 	delete_queue_series = async (ids: number[]) =>
 		this.delete_queue("series", ids);
 	delete_queue_movie = async (ids: number[]) => this.delete_queue("movie", ids);
-	// http://localhost:8989/api/v3/release?seriesId=113&seasonNumber=2
+
+	private async search_monitored(type: type, db_type: DBType, id: number) {
+		const r = await this.fetch_local_data(type, db_type, id);
+		id = r.data["id"];
+
+		let command;
+		if (type === "series") {
+			command = { name: "SeriesSearch", seriesId: id };
+		} else {
+			command = { name: "MoviesSearch", movieIds: [id] };
+		}
+
+		return axios({
+			url: `${type === "series" ? this.sonarr_address : this.radarr_address}/command`,
+			method: "POST",
+			data: command,
+			headers: prepare_headers(
+				type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+			),
+		});
+	}
+
+	search_monitored_series_tmdb = async (id: number) =>
+		this.search_monitored("series", "tmdb", id);
+	search_monitored_series_tvdb = async (id: number) =>
+		this.search_monitored("series", "tmdb", id);
+	search_monitored_movie_tmdb = async (id: number) =>
+		this.search_monitored("movie", "tmdb", id);
+	search_monitored_movie_imdb = async (id: any) =>
+		this.search_monitored("movie", "imdb", id);
+
+	private async get_interactive_queue(
+		type: type,
+		db_type: DBType,
+		id: number,
+		season?: number,
+	) {
+		const r = await this.fetch_local_data(type, db_type, id);
+		id = r.data["id"];
+
+		let query = "?";
+		if (type === "movie") {
+			query += `movieId=${id}`;
+		} else {
+			query += `seriesId=${id}&seasonNumber=${season}`;
+		}
+
+		return await axios.get(
+			`${type === "series" ? this.sonarr_address : this.radarr_address}/release${query}`,
+			{
+				headers: prepare_headers(
+					type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+				),
+			},
+		);
+	}
+
+	get_interactive_queue_series_tmdb = async (id: number, season: number) =>
+		this.get_interactive_queue("series", "tmdb", id, season);
+	get_interactive_queue_series_tvdb = async (id: number, season: number) =>
+		this.get_interactive_queue("series", "tvdb", id, season);
+	get_interactive_queue_movie_tmdb = async (id: number) =>
+		this.get_interactive_queue("movie", "tmdb", id);
+	get_interactive_queue_movie_imdb = async (id: any) =>
+		this.get_interactive_queue("movie", "imdb", id);
 }
