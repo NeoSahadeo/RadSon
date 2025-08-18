@@ -1,7 +1,7 @@
 {
   "name": "radson",
-  "version": "1.0.38",
-  "description": "Radarr + Sonarr Typescript API",
+  "version": "2.0.0",
+  "description": "A set of useful functions to make interacting with Sonarr and Radarr a joy.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
