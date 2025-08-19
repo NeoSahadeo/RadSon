@@ -293,9 +293,9 @@ export default class Radson {
 			query_params = prepare_query(arguments);
 		}
 		return await axios.get(
-			`${this.sonarr_address}/wanted/missing?${query_params.join("&")}`,
+			`${this.radarr_address}/wanted/missing?${query_params.join("&")}`,
 			{
-				headers: prepare_headers(this.sonarr_api_key!),
+				headers: prepare_headers(this.radarr_api_key!),
 			},
 		);
 	}
