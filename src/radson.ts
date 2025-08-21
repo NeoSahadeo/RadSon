@@ -59,7 +59,19 @@ export default class Radson {
 		}
 	}
 
-	async fetch_local_data(type: type, db_type: DBType, id: any) {
+	async fetch_local_data(type: type, db_type: DBType | "local", id: any) {
+		if (db_type === "local") {
+			const r = axios.get(
+				`${type === "series" ? this.sonarr_address : this.radarr_address}/${type}/${id}`,
+				{
+					headers: prepare_headers(
+						type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+					),
+				},
+			);
+			return r;
+		}
+
 		const r = await axios.get(
 			`${type === "series" ? this.sonarr_address : this.radarr_address}/${type}`,
 			{

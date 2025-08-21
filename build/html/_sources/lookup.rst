@@ -24,7 +24,7 @@ Methods
 
 .. code-block:: typescript
 
-  async fetch_local_data(type: type, db_type: DBType, id: any)
+  async fetch_local_data(type: type, db_type: DBType | "local", id: any)
 
 All lookup methods take in an ID of the respective type.
 
