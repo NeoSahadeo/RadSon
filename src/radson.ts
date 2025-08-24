@@ -455,4 +455,24 @@ export default class Radson {
 		this.get_interactive_queue("movie", "tmdb", id);
 	get_interactive_queue_movie_imdb = async (id: any) =>
 		this.get_interactive_queue("movie", "imdb", id);
+
+	private async post_interactive(type: type, guid: string, indexer_id: number) {
+		return axios({
+			url: `${type === "series" ? this.sonarr_address : this.radarr_address}/release`,
+			method: "POST",
+			headers: prepare_headers(
+				type === "series" ? this.sonarr_api_key! : this.radarr_api_key!,
+			),
+			data: {
+				guid: guid,
+				indexerId: indexer_id,
+			},
+		});
+	}
+
+	post_interactive_series = async (guid: string, indexer_id: number) =>
+		this.post_interactive("series", guid, indexer_id);
+
+	post_interactive_movie = async (guid: string, indexer_id: number) =>
+		this.post_interactive("movie", guid, indexer_id);
 }

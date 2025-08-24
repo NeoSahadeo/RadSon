@@ -35,3 +35,10 @@ test.only("Test queue interactive search", async () => {
 	const r_2 = await radson.get_interactive_queue_movie_imdb("tt4154796");
 	expect(r_2.status).toBe(200);
 }, 20_000); // 20secs
+
+test.only("Test queue interactive post", async () => {
+	const d_1 = await radson.get_interactive_queue_series_tmdb(63726, 12);
+	const r_1 = await radson.post_interactive_series(d_1.data[0]["guid"], 3);
+
+	expect(r_1.status).toBe(200);
+}, 20_000); // 20secs
