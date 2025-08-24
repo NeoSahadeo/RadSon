@@ -13,6 +13,16 @@ test.only("Test missing series", async () => {
 	// expect(r_2.status).toBe(200);
 });
 
+test.only("Test missing series by id", async () => {
+	// manual
+	const r_1 = await radson.get_missing_series({
+		episode_id: 135,
+	});
+	console.log(r_1.data);
+
+	expect(r_1.status).toBe(200);
+});
+
 test.only("Test missing movies", async () => {
 	const r_1 = await radson.get_missing_movies();
 	expect(r_1.status).toBe(200);

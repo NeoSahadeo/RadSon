@@ -29,3 +29,12 @@ test.only("Test monitoring for movies", async () => {
 	const r_1 = await radson.monitor_movie_tmdb(1061474, false);
 	expect(r_1.status).toBe(202);
 });
+
+test.only("Test monitoring invid series", async () => {
+	// manual
+	const r_1 = await radson.monitor_series_individual([11391], true);
+	expect(r_1.status).toBe(202);
+
+	const r_2 = await radson.monitor_series_individual([11391], false);
+	expect(r_2.status).toBe(202);
+}, 20_000);

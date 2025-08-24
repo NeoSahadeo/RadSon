@@ -5,6 +5,9 @@ Monitoring series and movies will **NOT** start
 the search for the request. It will just add it to
 the tracked items.
 
+For ``monitor_series_individual``, the series has to be already monitored.
+The episode id's can be queries by querying the missing episodes in the season.
+
 
 Methods
 -------
@@ -13,11 +16,13 @@ Methods
 
 	async monitor_series_tvdb (id: any, monitor?: boolean, seasons?: number[])
 
-	async monitor_series_tmdb = async (id: any, monitor?: boolean, seasons?: number[])
+	async monitor_series_tmdb (id: any, monitor?: boolean, seasons?: number[])
 
-	async monitor_movie_tmdb = (id: any, monitor?: boolean)
+	async monitor_movie_tmdb (id: any, monitor?: boolean)
 
-	async monitor_movie_imdb = async (id: any, monitor?: boolean)
+	async monitor_movie_imdb (id: any, monitor?: boolean)
+
+	async monitor_series_individual (episode_ids: number[], monitor: boolean)
 
 .. important::
 

@@ -3,6 +3,12 @@ Missing
 
 Get missing episodes / movies from the request wanted queue.
 
+The sonarr api does not work for individual series id's (as in, looking up
+missing series items based on a series id, crazy).
+
+To do this I added a custom ``episode_id`` parameter to the method.
+This is the ``seriesId`` for a monitored series.
+
 Methods
 -------
 

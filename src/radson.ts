@@ -263,12 +263,34 @@ export default class Radson {
 		monitored?: boolean;
 	} = {}) {
 		if (episode_id) {
-			return await axios.get(
-				`${this.sonarr_address}/wanted/missing/${episode_id}`,
-				{
-					headers: prepare_headers(this.sonarr_api_key!),
-				},
-			);
+			const data: any[] = [];
+			let x = 1;
+			for (; ;) {
+				const r: any = await this.get_missing_series({
+					page: x++,
+				});
+				r.data["records"].forEach((e: any, i: number) => {
+					if (Number(e["seriesId"]) == episode_id) {
+						data.push(r.data["records"][i]);
+					}
+				});
+
+				// The last page has no records :)
+				if (r.data["records"].length == 0) {
+					break;
+				}
+			}
+			return {
+				data: data,
+				status: 200,
+			};
+			// Sonarr does not implement this well and it does not work. Suprising...
+			// return await axios.get(
+			// 	`${this.sonarr_address}/wanted/missing/${episode_id}`,
+			// 	{
+			// 		headers: prepare_headers(this.sonarr_api_key!),
+			// 	},
+			// );
 		}
 
 		if (arguments[0] === undefined) {
@@ -475,4 +497,16 @@ export default class Radson {
 
 	post_interactive_movie = async (guid: string, indexer_id: number) =>
 		this.post_interactive("movie", guid, indexer_id);
+
+	async monitor_series_individual(episode_ids: number[], monitor: boolean) {
+		return axios({
+			url: `${this.sonarr_address}/episode/monitor`,
+			method: "PUT",
+			headers: prepare_headers(this.sonarr_api_key!),
+			data: {
+				episodeIds: episode_ids,
+				monitored: monitor,
+			},
+		});
+	}
 }

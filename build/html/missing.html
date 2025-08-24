@@ -322,6 +322,10 @@ document.write(`
   <section id="missing">
 <h1>Missing<a class="headerlink" href="#missing" title="Link to this heading">#</a></h1>
 <p>Get missing episodes / movies from the request wanted queue.</p>
+<p>The sonarr api does not work for individual series id’s (as in, looking up
+missing series items based on a series id, crazy).</p>
+<p>To do this I added a custom <code class="docutils literal notranslate"><span class="pre">episode_id</span></code> parameter to the method.
+This is the <code class="docutils literal notranslate"><span class="pre">seriesId</span></code> for a monitored series.</p>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">#</a></h2>
 <div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">get_missing_series</span><span class="p">({</span>
