@@ -411,22 +411,23 @@ to search for the monitored series / movie.</p>
 </section>
 <section id="using-interactive-search-results">
 <span id="isr"></span><h3>Using interactive search results<a class="headerlink" href="#using-interactive-search-results" title="Link to this heading">#</a></h3>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">post_interactive_series</span><span class="w"> </span><span class="p">(</span><span class="nx">guid</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">indexer_id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">post_interactive_movie</span><span class="w"> </span><span class="p">(</span><span class="nx">guid</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">indexer_id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>In order to use the results of the <a class="reference internal" href="#interactive-search">Interactive Search</a>
 one will need to send a <strong>POST</strong> request like it is shown below.
 It works the same for both Radarr and Sonarr.
 This will start the download for the request torrent.</p>
-<p>The endpoint is <code class="docutils literal notranslate"><span class="pre">/release</span></code> and the data looks like so</p>
-<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="s2">&quot;guid&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;[GUID_DATA]&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;indexerId&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">INDEXER_ID</span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="nx">fetch</span><span class="p">([</span><span class="nx">API_ADDRESS</span><span class="p">]</span><span class="o">/</span><span class="nx">api</span><span class="o">/</span><span class="nx">v3</span><span class="o">/</span><span class="nx">release</span><span class="p">,{</span>
-<span class="w">        </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">),</span>
-<span class="w">        </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{[</span><span class="nx">API_KEY</span><span class="p">]}</span>
-<span class="p">})</span>
+<p>A globally unique identifier, and the indexer id.
+The GUID is the magnet link, and the indexer id will depend
+on how Prowlarr is setup.</p>
+<p>A get request must first be sent (<a class="reference internal" href="#interactive-search">Interactive Search</a>) to cache to values.
+Once that is done one can call the following method.</p>
+<p>Example code:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">reponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">radson</span><span class="p">.</span><span class="nx">get_interactive_queue_series_tmdb</span><span class="p">(</span><span class="mf">63726</span><span class="p">,</span><span class="w"> </span><span class="mf">12</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">radson</span><span class="p">.</span><span class="nx">post_interactive_series</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="mf">0</span><span class="p">][</span><span class="s2">&quot;guid&quot;</span><span class="p">],</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="mf">0</span><span class="p">][</span><span class="s2">&quot;indexerId&quot;</span><span class="p">]);</span>
 </pre></div>
 </div>
 </section>

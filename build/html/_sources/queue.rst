@@ -106,24 +106,31 @@ These methods will start the search and download of monitored series.
 Using interactive search results
 ================================
 
+
+.. code-block:: typescript
+
+	async post_interactive_series (guid: string, indexer_id: number)
+
+	async post_interactive_movie (guid: string, indexer_id: number)
+
+
 In order to use the results of the `Interactive Search`_
 one will need to send a **POST** request like it is shown below.
 It works the same for both Radarr and Sonarr.
 This will start the download for the request torrent.
 
-The endpoint is ``/release`` and the data looks like so
+A globally unique identifier, and the indexer id.
+The GUID is the magnet link, and the indexer id will depend
+on how Prowlarr is setup.
+
+A get request must first be sent (`Interactive Search`_) to cache to values.
+Once that is done one can call the following method.
+
+
+
+Example code:
 
 .. code-block:: typescript
 
-	 data = {
-		"guid": "[GUID_DATA]",
-		"indexerId": [INDEXER_ID]
-	}
-
-.. code-block:: typescript
-
-	fetch([API_ADDRESS]/api/v3/release,{
-		method: "POST",
-		body: JSON.stringify(data),
-		headers: {[API_KEY]}
-	})
+	const reponse = await radson.get_interactive_queue_series_tmdb(63726, 12);
+	await radson.post_interactive_series(response.data[0]["guid"], response.data[0]["indexerId"]);
