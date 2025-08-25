@@ -243,7 +243,7 @@ export default class Radson {
 		this.monitor_movie("imdb", id, monitor ?? true);
 
 	async get_missing_series({
-		episode_id,
+		series_id,
 		page,
 		page_size,
 		sort_key,
@@ -252,7 +252,7 @@ export default class Radson {
 		include_images,
 		monitored,
 	}: {
-		episode_id?: number;
+		series_id?: number;
 		page?: number;
 		page_size?: number;
 		sort_key?: string;
@@ -262,7 +262,7 @@ export default class Radson {
 		include_episode_file?: boolean;
 		monitored?: boolean;
 	} = {}) {
-		if (episode_id) {
+		if (series_id) {
 			const data: any[] = [];
 			let x = 1;
 			for (; ;) {
@@ -270,7 +270,7 @@ export default class Radson {
 					page: x++,
 				});
 				r.data["records"].forEach((e: any, i: number) => {
-					if (Number(e["seriesId"]) == episode_id) {
+					if (Number(e["seriesId"]) == series_id) {
 						data.push(r.data["records"][i]);
 					}
 				});
@@ -330,6 +330,15 @@ export default class Radson {
 			`${this.radarr_address}/wanted/missing?${query_params.join("&")}`,
 			{
 				headers: prepare_headers(this.radarr_api_key!),
+			},
+		);
+	}
+
+	async get_episodes(series_id: number) {
+		return await axios.get(
+			`${this.sonarr_address}/episode?seriesId=${series_id}`,
+			{
+				headers: prepare_headers(this.sonarr_api_key!),
 			},
 		);
 	}
