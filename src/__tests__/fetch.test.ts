@@ -13,6 +13,10 @@ test.only("Test Movie and Series Lookups", async () => {
 
 test.only("Test get episode", async () => {
 	// manual
-	const r_1 = await radson.get_episodes(148);
+	const r_1 = await radson.get_episodes({
+		series_id: 148,
+		season_number: 1,
+		include_images: true,
+	});
 	expect(r_1.status).toBe(200);
 });

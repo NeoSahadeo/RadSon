@@ -11,4 +11,7 @@ export const ParamsMap: Record<string, string> = {
 	include_images: "includeImages",
 	include_episode_file: "includeEpisodeFile",
 	monitored: "monitored",
+	episode_ids: "episodeIds",
+	episodeFileId: "episodeFileId",
+	series_id: "seriesId",
 };

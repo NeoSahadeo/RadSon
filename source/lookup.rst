@@ -21,6 +21,16 @@ Methods
 
   async lookup_radarr_imdb(id: number)
 
+  async get_episodes ({
+		series_id?: number;
+		season_number?: number;
+		episode_ids?: number[];
+		episode_file_id?: number;
+		include_series?: boolean;
+		include_episode_file?: boolean;
+		include_images?: boolean;
+	})
+
 
 .. code-block:: typescript
 

@@ -334,9 +334,28 @@ export default class Radson {
 		);
 	}
 
-	async get_episodes(series_id: number) {
+	async get_episodes({
+		series_id,
+		season_number,
+		episode_ids,
+		episode_file_id,
+		include_series,
+		include_episode_file,
+		include_images,
+	}: {
+		series_id?: number;
+		season_number?: number;
+		episode_ids?: number[];
+		episode_file_id?: number;
+		include_series?: boolean;
+		include_episode_file?: boolean;
+		include_images?: boolean;
+	}) {
+		const query_params = prepare_query(arguments);
+
+		console.log(query_params);
 		return await axios.get(
-			`${this.sonarr_address}/episode?seriesId=${series_id}`,
+			`${this.sonarr_address}/episode?${query_params.join("&")}`,
 			{
 				headers: prepare_headers(this.sonarr_api_key!),
 			},

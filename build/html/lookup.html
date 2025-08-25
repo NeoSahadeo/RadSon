@@ -335,6 +335,16 @@ show’s internal reference ID and other variances).</p>
 <span class="k">async</span><span class="w"> </span><span class="nx">lookup_radarr_tmdb</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
 
 <span class="k">async</span><span class="w"> </span><span class="nx">lookup_radarr_imdb</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">get_episodes</span><span class="w"> </span><span class="p">({</span>
+<span class="w">              </span><span class="nx">series_id?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">              </span><span class="nx">season_number?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">              </span><span class="nx">episode_ids?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">[];</span>
+<span class="w">              </span><span class="nx">episode_file_id?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">              </span><span class="nx">include_series?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">              </span><span class="nx">include_episode_file?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">              </span><span class="nx">include_images?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">      </span><span class="p">})</span>
 </pre></div>
 </div>
 <div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="nx">fetch_local_data</span><span class="p">(</span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="kr">type</span><span class="p">,</span><span class="w"> </span><span class="nx">db_type</span><span class="o">:</span><span class="w"> </span><span class="kt">DBType</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span>
