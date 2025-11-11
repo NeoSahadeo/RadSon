@@ -1,2 +1,2 @@
-source/* linguist-vendored
-build/* linguist-vendored
+source/** linguist-vendored
+build/** linguist-vendored
